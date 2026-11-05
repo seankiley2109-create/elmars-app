@@ -48,6 +48,8 @@ babysit it.
   of it may ship. Elmar's first launch is empty, or offers the Evernote import.
 - **Losing or mangling a note**, including during the Evernote import.
 - **A sign-in screen, an account, or anything sent off his Mac** (apart from iCloud Drive doing its own syncing).
+  - The one sanctioned exception (Sean asked for the updater, 5 Nov 2026): the app asks GitHub Releases whether a new
+    version exists and downloads it. Nothing of his is sent.
 - **Builder and operator vocabulary on screen**, such as "vault", "jobs", "runs", "backlog", "shipped" or "signals". It
   speaks plainly.
 - Needing Sean every few weeks to keep it working.
@@ -205,7 +207,7 @@ a star. HQ's five task statuses stay in the data, so there's no migration risk, 
 - How the settings page is laid out (data folder, Evernote import, export, about and version).
 - **Updates.** Tauri's updater signs updates with its own key and needs no Apple account. Check whether an update it
   installs avoids the "Open Anyway" step. If it does, include it. If not, updates are a new `.dmg` that Sean installs
-  with him.
+  with him. **Done (5 Nov 2026):** the updater is in; see `docs/RELEASING.md`.
 - Tests: keep HQ's round-trip test (`deserialize(serialize(d)) ≡ canonical(d)`) as the main safeguard, extend it to
   events, and add one for the Evernote import using the sample `.enex`.
 
