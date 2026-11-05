@@ -30,7 +30,7 @@
   },
   "bundle": {
     "active": true,
-    "targets": ["dmg"],
+    "targets": ["app", "dmg"],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -41,6 +41,13 @@
     "macOS": {
       "minimumSystemVersion": "13.0",
       "signingIdentity": "-"
+    },
+    "createUpdaterArtifacts": true
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDQ0ODQ4Njg3NjIyNUQ2RTcKUldUbjFpVmloNGFFUkdOTTVUL3NPK05CMitxS1lKQUViYnZUaTREdWw4VVFoRVQwaU1nelFmbFgK",
+      "endpoints": ["https://github.com/seankiley2109-create/elmars-app/releases/latest/download/latest.json"]
     }
   }
 }

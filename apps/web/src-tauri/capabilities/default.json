@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "The main window: read and write the notes folder under the home folder, choose a folder, reveal it in Finder, open an attached file in place with its default app, and open web and mail links (http, https, mailto only). On macOS the fs scope never matches a hidden (dot) path component unless a pattern names it literally, so the hidden names the app needs are listed explicitly; nothing else hidden (~/.ssh and so on) is reachable.",
+  "description": "The main window: read and write the notes folder under the home folder, choose a folder, reveal it in Finder, open an attached file in place with its default app, and open web and mail links (http, https, mailto only). Updates: check for one, download and install it (the update's signature is verified in Rust against plugins.updater.pubkey; the address it checks is fixed in tauri.conf.json, not chosen by the page), and restart into it. On macOS the fs scope never matches a hidden (dot) path component unless a pattern names it literally, so the hidden names the app needs are listed explicitly; nothing else hidden (~/.ssh and so on) is reachable.",
   "windows": ["main"],
   "permissions": [
     "core:default",
@@ -35,6 +35,9 @@
     {
       "identifier": "opener:allow-open-url",
       "allow": [{ "url": "http:*" }, { "url": "https:*" }, { "url": "mailto:*" }]
-    }
+    },
+    "updater:allow-check",
+    "updater:allow-download-and-install",
+    "process:allow-restart"
   ]
 }

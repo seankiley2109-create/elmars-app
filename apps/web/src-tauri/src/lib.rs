@@ -181,6 +181,10 @@ pub fn run() {
     .plugin(tauri_plugin_fs::init())
     .plugin(tauri_plugin_dialog::init())
     .plugin(tauri_plugin_opener::init())
+    // In-app updates: the page checks GitHub Releases, downloads a signed update and restarts into it
+    // (src/lib/updater.ts). The signature is checked here, against plugins.updater.pubkey.
+    .plugin(tauri_plugin_updater::Builder::new().build())
+    .plugin(tauri_plugin_process::init())
     .manage(ExitState::default())
     .menu(build_menu)
     .on_menu_event(|handle, event| {
@@ -229,6 +233,14 @@ mod tests {
     assert!(state.lets_through(Some(0)));
     state.allow();
     assert!(state.lets_through(None));
+  }
+
+  #[test]
+  fn restarting_into_an_update_is_let_through() {
+    // relaunch() (tauri-plugin-process) calls request_restart, an ExitRequested carrying this code.
+    // The page has already saved (updater.ts), so the restart must not be held for a second save.
+    let state = ExitState::default();
+    assert!(state.lets_through(Some(tauri::RESTART_EXIT_CODE)));
   }
 
   #[test]
