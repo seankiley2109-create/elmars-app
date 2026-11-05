@@ -114,6 +114,33 @@ export function bumpAll(texts, version) {
   return Object.fromEntries(Object.entries(texts).map(([k, t]) => [k, BUMPERS[k](t, version)]));
 }
 
+/** The push that publishes a release: main and its tag together, or neither. */
+export const PUSH_COMMAND = 'git push --atomic origin main --follow-tags';
+
+/**
+ * Why the repo isn't ready to release `tag`, or null when it is. `git(...args)` runs git and returns its
+ * trimmed output (throws on failure); tests pass a fake. In order:
+ * - on main, with nothing uncommitted;
+ * - GitHub's tags and main fetched (`git fetch origin --tags`), and this main is not behind it, so the
+ *   release can't leave out a fix that is already on GitHub;
+ * - the tag exists neither here nor on GitHub.
+ */
+export function releaseGuardProblem(git, tag) {
+  const branch = git('rev-parse', '--abbrev-ref', 'HEAD');
+  if (branch !== 'main') return `you're on "${branch}". Releases are made from main: git switch main`;
+  if (git('status', '--porcelain') !== '') return 'there are uncommitted changes. Commit or put them aside first.';
+  try {
+    git('fetch', 'origin', '--tags');
+  } catch {
+    return "couldn't reach GitHub (git fetch origin --tags failed). Check the connection and try again.";
+  }
+  const behind = Number(git('rev-list', '--count', 'HEAD..origin/main'));
+  if (behind > 0) return `main is ${behind} commit(s) behind GitHub. Run git pull first.`;
+  if (git('tag', '--list', tag) !== '') return `the tag ${tag} already exists here.`;
+  if (git('ls-remote', '--tags', 'origin', `refs/tags/${tag}`) !== '') return `the tag ${tag} already exists on GitHub.`;
+  return null;
+}
+
 /** The platforms an installed copy asks latest.json for: Apple silicon and Intel Macs. */
 export const MAC_PLATFORMS = ['darwin-aarch64', 'darwin-x86_64'];
 

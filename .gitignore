@@ -5,3 +5,6 @@ dist
 .superpowers/
 target
 .claude/
+# The update signing key lives in ~/.tauri, never here. Belt and braces in case a copy wanders in.
+*.key
+*.key.pub

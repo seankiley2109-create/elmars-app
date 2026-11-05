@@ -62,15 +62,26 @@ export default function UpdateBar() {
   else if (phase === 'restarting') line = UPDATE_COPY.restarting;
   else line = offerLine(offer);
 
+  // What a screen reader hears: each change of step, once. The percentage changes many times a second
+  // while downloading, so it stays on screen only, out of the live region.
+  let announce: string;
+  if (phase === 'failed') announce = UPDATE_COPY.failed;
+  else if (phase === 'downloading') announce = UPDATE_COPY.downloading;
+  else if (phase === 'offer') announce = `${UPDATE_COPY.ready} ${line}`;
+  else announce = line;
+
   return (
     <section
       aria-label="New version"
       data-testid="update-bar"
       className="fixed bottom-36 right-4 z-[55] w-[min(92vw,26rem)] rounded-lg border border-line bg-panel p-4 shadow-2xl md:bottom-6 md:right-6"
     >
+      <p role="status" className="sr-only" data-testid="update-announce">
+        {announce}
+      </p>
       <div className="flex items-start gap-3">
         <ArrowDownCircle size={20} className="mt-0.5 shrink-0 text-accent" aria-hidden />
-        <div role="status" className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1">
           {phase === 'failed' ? (
             <p className="text-sm text-ink">{UPDATE_COPY.failed}</p>
           ) : (

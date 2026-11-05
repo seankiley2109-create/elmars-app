@@ -14,7 +14,44 @@ import {
   tagProblems,
   fixUpdaterJson,
   updaterJsonProblems,
+  releaseGuardProblem,
+  PUSH_COMMAND,
 } from './release-lib.mjs';
+
+/** A fake git: answers by the first argument(s); records every call. `fetch: 'throw'` fails the fetch. */
+function fakeGit(answers = {}) {
+  const calls = [];
+  const a = {
+    branch: 'main',
+    status: '',
+    fetch: '',
+    behind: '0',
+    localTag: '',
+    remoteTag: '',
+    ...answers,
+  };
+  const git = (...args) => {
+    calls.push(args.join(' '));
+    switch (args[0]) {
+      case 'rev-parse':
+        return a.branch;
+      case 'status':
+        return a.status;
+      case 'fetch':
+        if (a.fetch === 'throw') throw new Error('offline');
+        return '';
+      case 'rev-list':
+        return a.behind;
+      case 'tag':
+        return a.localTag;
+      case 'ls-remote':
+        return a.remoteTag;
+      default:
+        throw new Error(`unexpected git ${args.join(' ')}`);
+    }
+  };
+  return { git, calls };
+}
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const realTexts = () =>
@@ -108,4 +145,35 @@ test('latest.json: both Macs must get the signed universal update; a missing one
   assert.deepEqual(updaterJsonProblems(fixUpdaterJson(unsigned)), []);
 
   assert.throws(() => fixUpdaterJson({ version: '0.1.1', platforms: {} }), /no signed/);
+});
+
+test('release guard: an up-to-date, clean main with a free tag is ready, after fetching from GitHub', () => {
+  const { git, calls } = fakeGit();
+  assert.equal(releaseGuardProblem(git, 'v0.1.1'), null);
+  assert.deepEqual(calls, [
+    'rev-parse --abbrev-ref HEAD',
+    'status --porcelain',
+    'fetch origin --tags',
+    'rev-list --count HEAD..origin/main',
+    'tag --list v0.1.1',
+    'ls-remote --tags origin refs/tags/v0.1.1',
+  ]);
+});
+
+test('release guard: refuses off main, a dirty tree, no connection, behind GitHub, or a tag taken here or there', () => {
+  const problem = (answers) => releaseGuardProblem(fakeGit(answers).git, 'v0.1.1');
+  assert.match(problem({ branch: 'fix-thing' }), /on "fix-thing".*from main/);
+  assert.match(problem({ status: ' M README.md' }), /uncommitted/);
+  assert.match(problem({ fetch: 'throw' }), /couldn't reach GitHub/);
+  assert.match(problem({ behind: '2' }), /2 commit\(s\) behind GitHub/);
+  assert.match(problem({ localTag: 'v0.1.1' }), /already exists here/);
+  assert.match(problem({ remoteTag: 'abc123\trefs/tags/v0.1.1' }), /already exists on GitHub/);
+  // a refusal stops before anything later runs: off main, nothing is fetched
+  const off = fakeGit({ branch: 'other' });
+  releaseGuardProblem(off.git, 'v0.1.1');
+  assert.deepEqual(off.calls, ['rev-parse --abbrev-ref HEAD']);
+});
+
+test('the push is atomic: main and its tag go up together or not at all', () => {
+  assert.equal(PUSH_COMMAND, 'git push --atomic origin main --follow-tags');
 });

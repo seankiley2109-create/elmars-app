@@ -3,24 +3,43 @@
 Once Elmar's App is installed on his Mac ([INSTALL-DAY.md](INSTALL-DAY.md)), every fix reaches him inside the app.
 You never touch his Mac again.
 
+## First release (once, before install day)
+
+The repo starts at version 0.1.0 with no release yet. Publish that version as it is:
+
+```
+npm run release -- --current
+git push --atomic origin main --follow-tags
+```
+
+`--current` tags the version already in the files (`v0.1.0`) without changing or committing anything. It runs the
+same checks as a normal release (below). By hand it is `git tag -a v0.1.0 -m "Elmar's App v0.1.0"` then the same push.
+When the workflow finishes, the release page has the `.dmg` for install day. From then on, use the steps below.
+
 ## The steps
 
 1. **Make the fix** on `main` and commit it. `npm test` passes.
-2. **Release it** (the tree must be clean):
+2. **Release it:**
 
    ```
    npm run release -- 0.1.1
    ```
 
-   This checks the version is newer than the current one, sets it in `apps/web/src-tauri/tauri.conf.json`,
-   `apps/web/package.json`, `package-lock.json`, `Cargo.toml` and `Cargo.lock`, commits `release: v0.1.1` and tags
-   `v0.1.1`. It pushes nothing. It prints the next command.
+   First it checks that it's safe. You're on `main` with nothing uncommitted. It fetches from GitHub, and `main` isn't
+   behind GitHub's. The new version is newer than the current one. `v0.1.1` doesn't exist yet, here or on GitHub. If any
+   of that fails, it stops and says why.
+
+   Then it sets the version in `apps/web/src-tauri/tauri.conf.json`, `apps/web/package.json`, `package-lock.json`,
+   `Cargo.toml` and `Cargo.lock`, commits `release: v0.1.1` and tags `v0.1.1`. It pushes nothing. It prints the next
+   command.
 
 3. **Push it:**
 
    ```
-   git push origin main --follow-tags
+   git push --atomic origin main --follow-tags
    ```
+
+   `--atomic` sends `main` and the tag together, or neither, so GitHub never gets a tag without its commit.
 
 4. **GitHub builds and publishes it** (about 15 minutes; watch the Actions tab). The "Build Mac app" workflow stops at
    once if the tag and the version files disagree, runs the tests, builds the universal app, and publishes the release
@@ -43,7 +62,7 @@ written when the release is published.)
 
 Updates are signed with a key that only you have:
 
-- `C:\Users\seank\.tauri\elmars-app-updater.key` and the file holding its password, next to it.
+- `~/.tauri/elmars-app-updater.key` and the file holding its password, next to it in `~/.tauri/`.
 - The same key and password are the repository secrets `TAURI_SIGNING_PRIVATE_KEY` and
   `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`.
 

@@ -4,7 +4,7 @@ A one-time setup, about 15 minutes, on Elmar's Mac with him. After today every f
 **"Update and restart"**: no more downloads, no more "Open Anyway".
 
 **Before you go:** make sure a release exists (GitHub → Releases shows "Elmar's App v0.1.x" with a `.dmg`). If not,
-see [RELEASING.md](RELEASING.md). Ask Elmar to have his Evernote export ready, or do it together (step 3).
+see "First release" in [RELEASING.md](RELEASING.md). Ask Elmar to have his Evernote export ready, or do it together (step 3).
 
 Date: ____________   Mac model / macOS version: ______________________________
 
@@ -55,6 +55,20 @@ That's it. When you release a fix, Elmar sees **"A new version of Elmar's App is
 after an update. Click **Allow**.
 
 ---
+
+## Extra checks (5 minutes, worth doing once)
+
+Optional, but these only show up on a real Mac.
+
+- [ ] Open a note with an attached file (a PDF, say) and click **Open** next to it under **Attachments**. It opens in
+      its usual app. In an imported Evernote note, **Open** next to **Original from Evernote** shows it in the browser.
+- [ ] Drag a photo from Finder into a note. It appears where you dropped it and is still there after switching notes.
+- [ ] Type a web address in a note. A plain click only places the cursor. **⌘-click** opens it in the browser.
+- [ ] Type a few words and **immediately** right-click the app in the Dock → **Quit**. Reopen: are the words there?
+      yes / no. (Known limit: Dock quit, log out and shut down skip the app's save, so the last second of typing can be
+      lost. **⌘Q** always saves first.)
+- [ ] In Finder, **iCloud Drive → Elmar's App**, right-click a note file → **Remove Download**. Quit and reopen the
+      app. The note downloads and opens, or a "still downloading" screen appears and clears. Nothing is missing.
 
 ## If something goes wrong
 

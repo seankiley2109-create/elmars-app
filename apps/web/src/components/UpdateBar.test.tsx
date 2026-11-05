@@ -107,6 +107,9 @@ describe('the update offer', () => {
 
     fireEvent.click(byText(UPDATE_COPY.update)!);
     await waitFor(() => expect(screen.getByTestId('update-line').textContent).toBe('Getting the new version… 40%'));
+    // the live region announces the step, not every percentage
+    expect(screen.getByRole('status').textContent).toBe('Getting the new version…');
+    expect(screen.getByTestId('update-line').closest('[role="status"]')).toBeNull();
     expect(byText(UPDATE_COPY.update)!.hasAttribute('disabled')).toBe(true);
     expect(byText(UPDATE_COPY.later)!.hasAttribute('disabled')).toBe(true);
     await act(async () => finish());
@@ -164,6 +167,15 @@ describe('Settings → Check for updates', () => {
     await waitFor(() => expect(settingsStatus()).toBe(UPDATE_COPY.found('0.1.1')));
     expect(screen.getByTestId('update-bar')).toBeDefined();
     expect(byText(UPDATE_COPY.update)).not.toBeNull();
+  });
+
+  it('a version already installed (he kept the app open before its restart) is said, not offered again', async () => {
+    configureUpdater({ port: port(async () => update()) });
+    useUpdates.setState({ installedVersion: '0.1.1' });
+    renderSettings();
+    fireEvent.click(byText(UPDATE_COPY.check)!);
+    await waitFor(() => expect(settingsStatus()).toBe(UPDATE_COPY.installed('0.1.1')));
+    expect(screen.queryByTestId('update-bar')).toBeNull();
   });
 
   it('a check that fails: a plain message, no offer', async () => {

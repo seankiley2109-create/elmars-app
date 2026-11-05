@@ -164,6 +164,7 @@ export default function Settings() {
     try {
       const r = await checkForUpdate();
       if (r.kind === 'available') setMessage({ tone: 'ok', text: UPDATE_COPY.found(r.version) });
+      else if (r.kind === 'installed') setMessage({ tone: 'ok', text: UPDATE_COPY.installed(r.version) });
       else if (r.kind === 'none') setMessage({ tone: 'ok', text: UPDATE_COPY.upToDate(version || (await appVersion())) });
       else setMessage({ tone: 'warn', text: UPDATE_COPY.checkFailed });
     } finally {

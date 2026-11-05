@@ -169,6 +169,30 @@ describe('Update and restart', () => {
     expect(port.relaunch).toHaveBeenCalledTimes(1);
   });
 
+  it('"Keep open" at the save after installing: the offer goes, and the same version is not offered again', async () => {
+    const close = vi.fn(async () => {});
+    const port = fakePort(fakeUpdate({ close }));
+    const answers = [true, false]; // saved before the install; the save before the restart is declined
+    configureUpdater({ port, save: async () => answers.shift() ?? false });
+    await checkForUpdate();
+    await installUpdate();
+    expect(port.relaunch).not.toHaveBeenCalled();
+    expect(useUpdates.getState().offer).toBeNull();
+    expect(useUpdates.getState().shown).toBe(false);
+    expect(useUpdates.getState().installedVersion).toBe('0.1.1');
+    expect(close).toHaveBeenCalled();
+
+    // the server still lists 0.1.1 (this copy runs 0.1.0 until reopened): not offered again
+    expect(await checkForUpdate()).toEqual({ kind: 'installed', version: '0.1.1' });
+    expect(useUpdates.getState().shown).toBe(false);
+    expect(useUpdates.getState().offer).toBeNull();
+
+    // a newer one still is
+    port.check.mockResolvedValueOnce(fakeUpdate({ version: '0.1.2' }));
+    expect(await checkForUpdate()).toEqual({ kind: 'available', version: '0.1.2' });
+    expect(useUpdates.getState().shown).toBe(true);
+  });
+
   it('a saved folder is not asked about', async () => {
     const confirmQuit = vi.fn(async () => false);
     const flush = vi.fn(async () => {});

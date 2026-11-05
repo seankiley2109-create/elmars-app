@@ -57,6 +57,7 @@ export const UPDATE_COPY = {
   upToDate: (version: string) => `You're up to date (${version}).`,
   found: (version: string) => `Version ${version} is ready. Choose “Update and restart” to install it.`,
   checkFailed: "Couldn't check for updates. Check the internet connection and try again later.",
+  installed: (version: string) => `Version ${version} is installed. It starts the next time you open the app.`,
 } as const;
 
 /** The one short line under the offer: the version, and the first line of its notes if it has any. */
@@ -86,9 +87,21 @@ interface UpdateState {
   /** Bytes downloaded so far, and of how many (when the server says). */
   progress: { done: number; total?: number };
   lastCheckedAt: number | null;
+  /**
+   * A version already installed but not yet running: he chose "Keep open" at the last save before the
+   * restart. It is not offered again; it starts the next time he opens the app.
+   */
+  installedVersion: string | null;
 }
 
-const initial: UpdateState = { offer: null, shown: false, phase: 'offer', progress: { done: 0 }, lastCheckedAt: null };
+const initial: UpdateState = {
+  offer: null,
+  shown: false,
+  phase: 'offer',
+  progress: { done: 0 },
+  lastCheckedAt: null,
+  installedVersion: null,
+};
 
 export const useUpdates = create<UpdateState>(() => ({ ...initial }));
 
@@ -146,7 +159,12 @@ export function canUpdate(): boolean {
   return currentPort() !== null;
 }
 
-export type CheckResult = { kind: 'none' } | { kind: 'available'; version: string } | { kind: 'error' };
+export type CheckResult =
+  | { kind: 'none' }
+  | { kind: 'available'; version: string }
+  /** The newest version is already installed and starts next time (see `installedVersion`). */
+  | { kind: 'installed'; version: string }
+  | { kind: 'error' };
 
 let looking: Promise<CheckResult> | null = null;
 
@@ -163,7 +181,11 @@ export function checkForUpdate(now: number = Date.now()): Promise<CheckResult> {
     try {
       const found = await p.check();
       if (!found) return { kind: 'none' };
-      const { phase, offer: previous } = useUpdates.getState();
+      const { phase, offer: previous, installedVersion } = useUpdates.getState();
+      if (found.version === installedVersion) {
+        void found.close?.().catch(() => {});
+        return { kind: 'installed', version: found.version };
+      }
       // an install already under way keeps its own update
       if (phase === 'saving' || phase === 'downloading' || phase === 'restarting') {
         void found.close?.().catch(() => {});
@@ -228,10 +250,11 @@ export async function installUpdate(): Promise<void> {
   }
 
   // Typing while it downloaded is saved too. The new version is already in place, so "Keep open" here
-  // only puts off the restart: it starts the next time he opens the app.
+  // only puts off the restart: it starts the next time he opens the app, and is not offered again.
   useUpdates.setState({ phase: 'saving' });
   if (!(await saveFirst().catch(() => false))) {
-    useUpdates.setState({ shown: false, phase: 'offer' });
+    void offer.close?.().catch(() => {});
+    useUpdates.setState({ offer: null, shown: false, phase: 'offer', installedVersion: offer.version });
     return;
   }
 
