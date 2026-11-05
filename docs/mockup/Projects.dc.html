@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Projects</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/montana/components/bundle.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&amp;family=IBM+Plex+Mono:wght@500&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#B8175F}a:hover{color:#A8175A}
+.app{--mt-paper:#F6F5F1;--mt-panel:#FFFFFF;--mt-raised:#EFEDE7;--mt-line:#E2DFD7;--mt-line-strong:#878379;--mt-ink:#16171A;--mt-ink-2:#5A5852;--mt-ink-3:#6B6963;--mt-action:#C21E62;--mt-on-action:#FFFFFF;--mt-action-hover:#A8175A;--mt-accent-text:#B8175F;--mt-action-tint:#FBE7EF;--mt-focus:#C21E62;--mt-ok:#0E7A5C;--mt-ok-bg:#E1F2EA;--mt-warn:#8F5B00;--mt-warn-bg:#FAEFD5;--mt-crit:#B42B2B;--mt-crit-bg:#F8E2E0;--mt-soon:#3A4FB0;--mt-soon-bg:#E6EAF8;--mt-pend:#6B3FA0;--mt-pend-bg:#EFE8F7;color-scheme:light;width:1440px;height:900px;display:flex;background:var(--mt-paper);color:var(--mt-ink);font-family:Inter,system-ui,-apple-system,sans-serif;font-size:14px;line-height:20px;overflow:hidden;box-sizing:border-box}
+.app *{box-sizing:border-box}
+.side{width:240px;flex:none;background:var(--mt-panel);border-right:1px solid var(--mt-line);display:flex;flex-direction:column;padding:20px 12px 0}
+.brand{display:flex;align-items:center;gap:10px;padding:0 8px 16px}
+.av{width:32px;height:32px;border-radius:8px;background:var(--mt-ink);color:#fff;display:flex;align-items:center;justify-content:center;font-family:Archivo,sans-serif;font-weight:700}
+.find{display:flex;align-items:center;gap:8px;height:40px;width:100%;padding:0 10px;border:1px solid var(--mt-line-strong);border-radius:6px;color:var(--mt-ink-2);background:var(--mt-paper);margin-bottom:16px;font:inherit;text-align:left;cursor:pointer}
+.kbd{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:11px;line-height:18px;color:var(--mt-ink-2);border:1px solid var(--mt-line);border-radius:4px;padding:0 5px;background:var(--mt-panel)}
+.nav{position:relative;display:flex;align-items:center;gap:12px;height:44px;padding:0 12px;border-radius:6px;color:var(--mt-ink-2);text-decoration:none;font-weight:500}
+.nav:hover{background:var(--mt-raised);color:var(--mt-ink)}
+.nav.on{background:var(--mt-raised);color:var(--mt-ink);font-weight:600}
+.nav.on::before{content:"";position:absolute;left:-12px;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:linear-gradient(180deg,#F20274,#F57939)}
+.ico{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.ico16{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.count{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--mt-ink-3);font-weight:500}
+.sidelabel{font-size:12px;color:var(--mt-ink-3);padding:20px 12px 6px}
+.proj{display:flex;align-items:center;gap:10px;height:36px;padding:0 12px;border-radius:6px;color:var(--mt-ink);text-decoration:none;font-size:13px}
+.proj:hover{background:var(--mt-raised);color:var(--mt-ink)}
+.dot{width:10px;height:10px;border-radius:3px;flex:none;display:inline-block}
+.sidefoot{margin-top:auto;display:flex;align-items:center;gap:8px;padding:14px 12px;font-size:12px;color:var(--mt-ink-2);border-top:1px solid var(--mt-line)}
+.okdot{width:8px;height:8px;border-radius:50%;background:var(--mt-ok);flex:none}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;padding:28px 40px 32px;gap:20px}
+.head{display:flex;align-items:flex-end;gap:16px}
+.h1{font-family:Archivo,sans-serif;font-weight:800;font-size:36px;line-height:40px;margin:0;letter-spacing:-0.02em}
+.meta{font-size:13px;color:var(--mt-ink-2)}
+.btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:6px;border:1px solid var(--mt-line-strong);background:var(--mt-panel);color:var(--mt-ink);font:inherit;font-weight:600;cursor:pointer;text-decoration:none}
+.btn:hover{background:var(--mt-raised)}
+.btn.primary{background:var(--mt-action);border-color:var(--mt-action);color:var(--mt-on-action)}
+.btn.primary:hover{background:var(--mt-action-hover)}
+.seg{display:inline-flex;border:1px solid var(--mt-line-strong);border-radius:6px;overflow:hidden;background:var(--mt-panel)}
+.seg button{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 14px;border:0;border-left:1px solid var(--mt-line);background:transparent;font:inherit;color:var(--mt-ink-2);cursor:pointer}
+.seg button:first-child{border-left:0}
+.seg button[aria-pressed="true"]{background:var(--mt-raised);color:var(--mt-ink);font-weight:600}
+.pill{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;white-space:nowrap}
+.pill.crit{color:var(--mt-crit);background:var(--mt-crit-bg)}
+.pill.soon{color:var(--mt-soon);background:var(--mt-soon-bg)}
+.pill.ok{color:var(--mt-ok);background:var(--mt-ok-bg)}
+.pill.pend{color:var(--mt-pend);background:var(--mt-pend-bg)}
+.pill.quiet{color:var(--mt-ink-2);background:var(--mt-raised)}
+.mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-weight:500}
+.cols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;flex:1;min-height:0}
+.col{display:flex;flex-direction:column;gap:10px;background:var(--mt-raised);border-radius:10px;padding:6px 10px 12px;min-width:0}
+.colhead{display:flex;align-items:center;gap:8px;height:44px;padding:0 4px}
+.colname{font-family:Archivo,sans-serif;font-weight:700;font-size:15px}
+.addbtn{margin-left:auto;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border:0;background:transparent;border-radius:6px;color:var(--mt-ink-2);cursor:pointer}
+.addbtn:hover{background:var(--mt-line);color:var(--mt-ink)}
+.card{display:flex;flex-direction:column;gap:10px;padding:14px;background:var(--mt-panel);border:1px solid var(--mt-line);border-radius:8px;text-decoration:none;color:var(--mt-ink)}
+.card:hover{border-color:var(--mt-line-strong);color:var(--mt-ink)}
+.cname{display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px;line-height:22px}
+.cnext{font-size:13px;line-height:18px;color:var(--mt-ink-2)}
+.bar{height:6px;border-radius:3px;background:var(--mt-raised);overflow:hidden}
+.bar span{display:block;height:100%;border-radius:3px}
+.cfoot{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--mt-ink-2)}
+.cfoot span{display:inline-flex;align-items:center;gap:4px}
+.card.quiet{background:transparent;border-style:dashed;border-color:var(--mt-line-strong)}
+</style>
+</helmet>
+<div class="app mt-base">
+  <aside class="side">
+    <div class="brand">
+      <span class="av" aria-hidden="true">E</span>
+      <div style="display: flex; flex-direction: column">
+        <span style="font-weight: 600">Elmar</span>
+        <span style="font-size: 12px; color: var(--mt-ink-3)">Personal</span>
+      </div>
+    </div>
+    <button class="find" type="button">
+      <svg class="ico16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+      Search everything
+      <span class="kbd">⌘K</span>
+    </button>
+    <nav style="display: flex; flex-direction: column; gap: 2px" aria-label="Main">
+      <a class="nav" href="Main.dc.html">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"></path></svg>
+        Today<span class="count">4</span>
+      </a>
+      <a class="nav on" href="Projects.dc.html" aria-current="page">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg>
+        Projects<span class="count">5</span>
+      </a>
+      <a class="nav" href="Notes.dc.html">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"></path><path d="M14 2v5h5M8 13h8M8 17h5"></path></svg>
+        Notes
+      </a>
+      <a class="nav" href="Calendar.dc.html">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>
+        Calendar
+      </a>
+      <a class="nav" href="Map.dc.html">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.5"></circle><circle cx="5" cy="19" r="2.5"></circle><circle cx="19" cy="19" r="2.5"></circle><path d="M12 7.5v4M12 11.5 6.8 17.2M12 11.5l5.2 5.7"></path></svg>
+        Map
+      </a>
+    </nav>
+    <div class="sidelabel">Projects</div>
+    <a class="proj" href="Projects.dc.html"><span class="dot" style="background: #D64D1E"></span>Kitchen renovation</a>
+    <a class="proj" href="Projects.dc.html"><span class="dot" style="background: #16877A"></span>December in Knysna</a>
+    <a class="proj" href="Projects.dc.html"><span class="dot" style="background: #3A4FB0"></span>Cycle Tour 2027</a>
+    <a class="proj" href="Projects.dc.html"><span class="dot" style="background: #8F5B00"></span>Board pack Q4</a>
+    <a class="proj" href="Projects.dc.html"><span class="dot" style="background: #0E7A5C"></span>Garden irrigation</a>
+    <div class="sidefoot"><span class="okdot"></span>Saved on this Mac · iCloud Drive</div>
+  </aside>
+
+  <main class="main">
+    <div class="head">
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 6px">
+        <span class="meta">4 on the go, 1 on hold, 2 for someday</span>
+        <h1 class="h1">Projects</h1>
+      </div>
+      <div class="seg" role="group" aria-label="View">
+        <button type="button" aria-pressed="{{boardOn}}" onClick="{{showBoard}}">Board</button>
+        <button type="button" aria-pressed="{{timelineOn}}" onClick="{{showTimeline}}">Timeline</button>
+        <a href="Map.dc.html" style="display: inline-flex; align-items: center; height: 38px; padding: 0 14px; border-left: 1px solid var(--mt-line); color: var(--mt-ink-2); text-decoration: none">Map</a>
+      </div>
+      <button class="btn primary" type="button">
+        <svg class="ico16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+        New project
+      </button>
+    </div>
+
+    <div class="cols">
+      <section class="col" aria-labelledby="c-active">
+        <div class="colhead">
+          <h2 class="colname" id="c-active" style="margin: 0">On the go</h2>
+          <span class="mono" style="font-size: 12px; color: var(--mt-ink-2)">4</span>
+          <button class="addbtn" type="button" aria-label="Add a project to On the go"><svg class="ico16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+        </div>
+        <a class="card" href="Main.dc.html">
+          <span class="cname"><span class="dot" style="background: #D64D1E"></span>Kitchen renovation</span>
+          <span class="cnext">Next: choose tiles at the showroom</span>
+          <span class="bar"><span style="width: 55%; background: #D64D1E"></span></span>
+          <span class="cfoot">
+            <span class="mono">6 of 11</span>
+            <span><svg class="ico16" viewBox="0 0 24 24" aria-hidden="true" style="width: 14px; height: 14px"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"></path><path d="M14 2v5h5"></path></svg>3 notes</span>
+            <span class="pill quiet" style="margin-left: auto">By 15 Dec</span>
+          </span>
+        </a>
+        <a class="card" href="Main.dc.html">
+          <span class="cname"><span class="dot" style="background: #16877A"></span>December in Knysna</span>
+          <span class="cnext">Next: book flights for December</span>
+          <span class="bar"><span style="width: 38%; background: #16877A"></span></span>
+          <span class="cfoot">
+            <span class="mono">3 of 8</span>
+            <span><svg class="ico16" viewBox="0 0 24 24" aria-hidden="true" style="width: 14px; height: 14px"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"></path><path d="M14 2v5h5"></path></svg>2 notes</span>
+            <span class="pill quiet" style="margin-left: auto">Leave 18 Dec</span>
+          </span>
+        </a>
+        <a class="card" href="Main.dc.html">
+          <span class="cname"><span class="dot" style="background: #8F5B00"></span>Board pack Q4</span>
+          <span class="cnext">Next: send the board pack to directors</span>
+          <span class="bar"><span style="width: 40%; background: #8F5B00"></span></span>
+          <span class="cfoot">
+            <span class="mono">2 of 5</span>
+            <span><svg class="ico16" viewBox="0 0 24 24" aria-hidden="true" style="width: 14px; height: 14px"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"></path><path d="M14 2v5h5"></path></svg>1 note</span>
+            <span class="pill soon" style="margin-left: auto">Due 9 Nov</span>
+          </span>
+        </a>
+        <a class="card" href="Main.dc.html">
+          <span class="cname"><span class="dot" style="background: #3A4FB0"></span>Cycle Tour 2027</span>
+          <span class="cnext">Next: hill session on Wednesday</span>
+          <span class="bar"><span style="width: 45%; background: #3A4FB0"></span></span>
+          <span class="cfoot">
+            <span class="mono">9 of 20</span>
+            <span><svg class="ico16" viewBox="0 0 24 24" aria-hidden="true" style="width: 14px; height: 14px"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"></path><path d="M14 2v5h5"></path></svg>1 note</span>
+            <span class="pill quiet" style="margin-left: auto">Race 14 Mar</span>
+          </span>
+        </a>
+      </section>
+
+      <section class="col" aria-labelledby="c-hold">
+        <div class="colhead">
+          <h2 class="colname" id="c-hold" style="margin: 0">On hold</h2>
+          <span class="mono" style="font-size: 12px; color: var(--mt-ink-2)">1</span>
+          <button class="addbtn" type="button" aria-label="Add a project to On hold"><svg class="ico16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+        </div>
+        <a class="card" href="Main.dc.html">
+          <span class="cname"><span class="dot" style="background: #0E7A5C"></span>Garden irrigation</span>
+          <span class="cnext">Waiting for the installer's quote</span>
+          <span class="bar"><span style="width: 25%; background: #0E7A5C"></span></span>
+          <span class="cfoot">
+            <span class="mono">1 of 4</span>
+            <span class="pill pend" style="margin-left: auto">Waiting</span>
+          </span>
+        </a>
+      </section>
+
+      <section class="col" aria-labelledby="c-some">
+        <div class="colhead">
+          <h2 class="colname" id="c-some" style="margin: 0">Someday</h2>
+          <span class="mono" style="font-size: 12px; color: var(--mt-ink-2)">2</span>
+          <button class="addbtn" type="button" aria-label="Add a project to Someday"><svg class="ico16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+        </div>
+        <a class="card" href="Main.dc.html">
+          <span class="cname"><span class="dot" style="background: #6B6963"></span>Learn to sail</span>
+          <span class="cnext">An idea for now. No tasks yet.</span>
+          <span class="cfoot"><span>1 note</span></span>
+        </a>
+        <a class="card" href="Main.dc.html">
+          <span class="cname"><span class="dot" style="background: #6B6963"></span>Family photo books</span>
+          <span class="cnext">One book per year, starting with 2024.</span>
+          <span class="cfoot"><span>No notes yet</span></span>
+        </a>
+        <button class="card quiet" type="button" style="align-items: center; justify-content: center; height: 64px; font: inherit; color: var(--mt-ink-2); cursor: pointer">Drop an idea here</button>
+      </section>
+
+      <section class="col" aria-labelledby="c-done">
+        <div class="colhead">
+          <h2 class="colname" id="c-done" style="margin: 0">Done</h2>
+          <span class="mono" style="font-size: 12px; color: var(--mt-ink-2)">1</span>
+        </div>
+        <a class="card" href="Main.dc.html">
+          <span class="cname" style="color: var(--mt-ink-2)"><span class="dot" style="background: #5A5852"></span>New car</span>
+          <span class="cnext">Collected 12 Oct. Licence disc still to renew.</span>
+          <span class="bar"><span style="width: 100%; background: #0E7A5C"></span></span>
+          <span class="cfoot">
+            <span class="mono">7 of 7</span>
+            <span class="pill ok" style="margin-left: auto">Done</span>
+          </span>
+        </a>
+      </section>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const view = (this.state && this.state.view) || 'board';
+    return {
+      boardOn: view === 'board' ? 'true' : 'false',
+      timelineOn: view === 'timeline' ? 'true' : 'false',
+      mapOn: view === 'map' ? 'true' : 'false',
+      showBoard: () => this.setState({ view: 'board' }),
+      showTimeline: () => this.setState({ view: 'timeline' }),
+      showMap: () => this.setState({ view: 'map' })
+    };
+  }
+}
+</script>
+</body>
+</html>

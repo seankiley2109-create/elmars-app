@@ -1,0 +1,12 @@
+# The vault is data, not source. HQ's serializer writes LF and diffs file content byte-for-byte to
+# decide what changed — so if git checked these out as CRLF (the Windows default, core.autocrlf=true),
+# every file would read back different from what HQ would write, and the first save of the session
+# would rewrite all ~53 files instead of the one you touched. Every checkout would re-trigger it.
+#
+# Pin it. Line endings in the vault are LF, everywhere, always.
+vault/** text eol=lf
+
+# Same reasoning for the fixtures the round-trip tests compare byte-for-byte.
+*.md text eol=lf
+*.yaml text eol=lf
+*.jsonl text eol=lf

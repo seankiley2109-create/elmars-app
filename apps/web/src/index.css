@@ -1,0 +1,255 @@
+@import "tailwindcss";
+
+/* ---------- Theme tokens: Montana, light only (the dark theme and its toggle are gone) ---------- */
+:root {
+  /* Montana */
+  --mt-paper: #F6F5F1;
+  --mt-panel: #FFFFFF;
+  --mt-raised: #EFEDE7;
+  --mt-line: #E2DFD7;
+  --mt-line-strong: #878379;
+  --mt-ink: #16171A;
+  --mt-ink-2: #5A5852;
+  --mt-ink-3: #6B6963;
+  --mt-action: #C21E62;
+  --mt-on-action: #FFFFFF;
+  --mt-action-hover: #A8175A;
+  --mt-accent-text: #B8175F;
+  --mt-action-tint: #FBE7EF;
+  --mt-focus: #C21E62;
+  --mt-ok: #0E7A5C;
+  --mt-ok-bg: #E1F2EA;
+  --mt-warn: #8F5B00;
+  --mt-warn-bg: #FAEFD5;
+  --mt-crit: #B42B2B;
+  --mt-crit-bg: #F8E2E0;
+  --mt-soon: #3A4FB0;
+  --mt-soon-bg: #E6EAF8;
+  --mt-pend: #6B3FA0;
+  --mt-pend-bg: #EFE8F7;
+  /* the signal gradient: the active place's tick */
+  --mt-signal: linear-gradient(180deg, #F20274, #F57939);
+
+  /* HQ's tokens, remapped onto Montana so every existing screen picks the look up */
+  --bg: var(--mt-paper);
+  --surface: var(--mt-panel);
+  --surface2: var(--mt-raised);
+  --line: var(--mt-line);
+  --ink: var(--mt-ink);
+  --muted: var(--mt-ink-2);
+  --dim: var(--mt-ink-3);
+  --accent: var(--mt-accent-text);
+  --ok: var(--mt-ok);
+  --warn: var(--mt-warn);
+  --danger: var(--mt-crit);
+  --glow: rgba(22, 23, 26, 0.06);
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface2: var(--surface2);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-dim: var(--dim);
+  --color-danger: var(--danger);
+  /* Montana names, for new screens */
+  --color-paper: var(--mt-paper);
+  --color-panel: var(--mt-panel);
+  --color-raised: var(--mt-raised);
+  --color-line-strong: var(--mt-line-strong);
+  --color-ink-2: var(--mt-ink-2);
+  --color-ink-3: var(--mt-ink-3);
+  --color-action: var(--mt-action);
+  --color-action-hover: var(--mt-action-hover);
+  --color-on-action: var(--mt-on-action);
+  --color-focus: var(--mt-focus);
+  --color-ok-bg: var(--mt-ok-bg);
+  --color-warn-bg: var(--mt-warn-bg);
+  --color-crit: var(--mt-crit);
+  --color-crit-bg: var(--mt-crit-bg);
+  --color-soon: var(--mt-soon);
+  --color-soon-bg: var(--mt-soon-bg);
+  --color-pend: var(--mt-pend);
+  --color-pend-bg: var(--mt-pend-bg);
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Archivo", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Named type scale — replaces the ad-hoc text-[10.5px]/text-[11.5px]/… ladder so sizes stop
+     drifting. Steps: micro 10 · 2xs 11 · xs 12 (Tailwind default) · 2sm 13 · sm 14 · base 16. */
+  --text-micro: 0.625rem;   /* 10px */
+  --text-micro--line-height: 0.9rem;
+  --text-2xs: 0.6875rem;    /* 11px */
+  --text-2xs--line-height: 1rem;
+  --text-2sm: 0.8125rem;    /* 13px */
+  --text-2sm--line-height: 1.15rem;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "cv02", "cv03", "cv04";
+}
+
+/* Headings in Archivo: 800 for the page title, 700 below it. In the base layer so a utility on the
+   element (a size, a weight) still wins. */
+@layer base {
+  h1, h2, h3 {
+    font-family: var(--font-display);
+  }
+  h1 { font-weight: 800; letter-spacing: -0.02em; }
+  h2, h3 { font-weight: 700; }
+}
+
+::selection {
+  background: var(--mt-action-tint);
+}
+
+/* Small-caps section label, echoing the seed's WHAT / NEXT card grammar */
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Figures: IBM Plex Mono 500 with tabular numerals, so columns of numbers line up */
+.tnum, .mono {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.glow {
+  box-shadow: 0 0 24px var(--glow);
+}
+
+/* The active place's tick in the sidebar: a 3px bar of the signal gradient on the rail's edge */
+.signal-tick::before {
+  content: "";
+  position: absolute;
+  left: -12px;
+  top: 10px;
+  bottom: 10px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--mt-signal);
+}
+
+/* Focus rings. In the base layer so a field that draws its own focus (outline-none plus a border,
+   or the bare input inside the search and capture bars) is not boxed in a second ring. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--mt-focus);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+/* Scrollbars that match the theme */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+
+/* In the base layer: unlayered, these beat every utility, so a primary button's white text and any
+   control's text-size class were silently overridden by the inherited ones. */
+@layer base {
+  input, textarea, select, button {
+    font: inherit;
+    color: inherit;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: var(--dim);
+  }
+}
+
+/* Every native <select> restyled on-system: our own chevron instead of the OS arrow, and room for
+   it on the right. Unlayered, so it wins over Tailwind's px-* utilities without per-site classes. */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  padding-right: 2.25rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B6963' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+}
+
+/* cmdk group headings */
+.cmdk-group [cmdk-group-heading] {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  padding: 8px 12px 4px;
+}
+
+/* Rendered markdown (notes) */
+.prose-hq {
+  font-size: 14px;
+  line-height: 1.65;
+}
+.prose-hq h1, .prose-hq h2, .prose-hq h3 {
+  font-weight: 700;
+  margin: 1em 0 0.4em;
+  line-height: 1.3;
+}
+.prose-hq h1 { font-size: 1.25em; }
+.prose-hq h2 { font-size: 1.1em; }
+.prose-hq h3 { font-size: 1em; }
+.prose-hq p { margin: 0.6em 0; }
+.prose-hq ul, .prose-hq ol { margin: 0.6em 0; padding-left: 1.4em; }
+.prose-hq ul { list-style: disc; }
+.prose-hq ol { list-style: decimal; }
+.prose-hq li { margin: 0.25em 0; }
+.prose-hq code {
+  background: var(--surface2);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 0.1em 0.35em;
+  font-size: 0.86em;
+}
+.prose-hq pre {
+  background: var(--surface2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.8em 1em;
+  overflow-x: auto;
+}
+.prose-hq pre code { background: none; border: none; padding: 0; }
+.prose-hq a { color: var(--accent); text-decoration: underline; }
+.prose-hq blockquote {
+  border-left: 3px solid var(--accent);
+  margin: 0.8em 0;
+  padding-left: 1em;
+  color: var(--muted);
+}
+.prose-hq strong { font-weight: 700; }
+.prose-hq hr { border: none; border-top: 1px solid var(--line); margin: 1em 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

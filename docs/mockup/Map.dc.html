@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Map</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/montana/components/bundle.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&amp;family=IBM+Plex+Mono:wght@500&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#B8175F}a:hover{color:#A8175A}
+.app{--mt-paper:#F6F5F1;--mt-panel:#FFFFFF;--mt-raised:#EFEDE7;--mt-line:#E2DFD7;--mt-line-strong:#878379;--mt-ink:#16171A;--mt-ink-2:#5A5852;--mt-ink-3:#6B6963;--mt-action:#C21E62;--mt-on-action:#FFFFFF;--mt-action-hover:#A8175A;--mt-accent-text:#B8175F;--mt-focus:#C21E62;--mt-ok:#0E7A5C;--mt-ok-bg:#E1F2EA;--mt-pend:#6B3FA0;--mt-pend-bg:#EFE8F7;color-scheme:light;width:1440px;height:900px;display:flex;background:var(--mt-paper);color:var(--mt-ink);font-family:Inter,system-ui,-apple-system,sans-serif;font-size:14px;line-height:20px;overflow:hidden;box-sizing:border-box}
+.app *{box-sizing:border-box}
+.side{width:240px;flex:none;background:var(--mt-panel);border-right:1px solid var(--mt-line);display:flex;flex-direction:column;padding:20px 12px 0}
+.brand{display:flex;align-items:center;gap:10px;padding:0 8px 16px}
+.av{width:32px;height:32px;border-radius:8px;background:var(--mt-ink);color:#fff;display:flex;align-items:center;justify-content:center;font-family:Archivo,sans-serif;font-weight:700}
+.find{display:flex;align-items:center;gap:8px;height:40px;width:100%;padding:0 10px;border:1px solid var(--mt-line-strong);border-radius:6px;color:var(--mt-ink-2);background:var(--mt-paper);margin-bottom:16px;font:inherit;text-align:left;cursor:pointer}
+.kbd{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:11px;line-height:18px;color:var(--mt-ink-2);border:1px solid var(--mt-line);border-radius:4px;padding:0 5px;background:var(--mt-panel)}
+.nav{position:relative;display:flex;align-items:center;gap:12px;height:44px;padding:0 12px;border-radius:6px;color:var(--mt-ink-2);text-decoration:none;font-weight:500}
+.nav:hover{background:var(--mt-raised);color:var(--mt-ink)}
+.nav.on{background:var(--mt-raised);color:var(--mt-ink);font-weight:600}
+.nav.on::before{content:"";position:absolute;left:-12px;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:linear-gradient(180deg,#F20274,#F57939)}
+.ico{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.ico16{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.count{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--mt-ink-3);font-weight:500}
+.sidelabel{font-size:12px;color:var(--mt-ink-3);padding:20px 12px 6px}
+.proj{display:flex;align-items:center;gap:10px;height:36px;padding:0 12px;border-radius:6px;color:var(--mt-ink);text-decoration:none;font-size:13px}
+.proj:hover{background:var(--mt-raised);color:var(--mt-ink)}
+.dot{width:10px;height:10px;border-radius:3px;flex:none;display:inline-block}
+.sidefoot{margin-top:auto;display:flex;align-items:center;gap:8px;padding:14px 12px;font-size:12px;color:var(--mt-ink-2);border-top:1px solid var(--mt-line)}
+.okdot{width:8px;height:8px;border-radius:50%;background:var(--mt-ok);flex:none}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;padding:28px 40px 28px;gap:18px}
+.head{display:flex;align-items:flex-end;gap:10px}
+.h1{font-family:Archivo,sans-serif;font-weight:800;font-size:36px;line-height:40px;margin:0;letter-spacing:-0.02em}
+.meta{font-size:13px;color:var(--mt-ink-2)}
+.btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:6px;border:1px solid var(--mt-line-strong);background:var(--mt-panel);color:var(--mt-ink);font:inherit;font-weight:600;cursor:pointer;text-decoration:none}
+.btn:hover{background:var(--mt-raised);color:var(--mt-ink)}
+.chip{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--mt-line-strong);background:var(--mt-panel);font:inherit;font-size:13px;color:var(--mt-ink-2);cursor:pointer}
+.chip:hover{background:var(--mt-raised)}
+.chip[aria-pressed="true"]{background:var(--mt-raised);color:var(--mt-ink);font-weight:600;border-color:var(--mt-ink)}
+.mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-weight:500}
+.mapwrap{position:relative;flex:1;min-height:0;background-color:#FFFFFF;background-image:radial-gradient(#E2DFD7 1px,transparent 1.2px);background-size:24px 24px;border:1px solid var(--mt-line);border-radius:8px;overflow:hidden}
+.edge{position:absolute;height:0;border-top:1.5px solid #DAD7CF;transform-origin:0 0;pointer-events:none}
+.edge.hub{border-top-width:2px;border-top-color:#D0CCC3}
+.edge.on{border-top-color:#878379}
+.edge.link{border-top:1.5px dashed #878379}
+.edge.dim{opacity:.35}
+.node{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;border:0;background:transparent;padding:0;cursor:pointer;border-radius:50%;transition:opacity 150ms cubic-bezier(.2,.8,.2,1)}
+.node:focus-visible{outline:2px solid #C21E62;outline-offset:2px}
+.node.me{width:80px;height:80px}
+.node.proj{width:70px;height:70px}
+.node.task,.node.note{width:30px;height:30px}
+.node.dim{opacity:.35}
+.ring{display:flex;align-items:center;justify-content:center;border-radius:50%;box-sizing:border-box}
+.me .ring{width:72px;height:72px;background:#16171A}
+.proj .ring{width:62px;height:62px}
+.task .ring{width:14px;height:14px}
+.note .ring{width:16px;height:16px;border-radius:4px}
+.pin{width:46px;height:46px;border-radius:50%;background:#FFFFFF;display:flex;align-items:center;justify-content:center;font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:500;color:var(--mt-ink)}
+.me .pin{background:transparent;color:#FFFFFF;font-family:Archivo,sans-serif;font-size:28px;font-weight:800}
+.task .pin,.note .pin{display:none}
+.node.on .ring{box-shadow:0 0 0 3px #FFFFFF,0 0 0 5px #16171A}
+.lbl{position:absolute;font-size:12px;line-height:16px;color:var(--mt-ink);background:rgba(255,255,255,.92);padding:2px 6px;border-radius:4px;white-space:nowrap;pointer-events:none}
+.lbl.mid{transform:translate(-50%,-50%);font-weight:600;font-size:13px;line-height:18px}
+.lbl.r{transform:translate(0,-50%)}
+.lbl.l{transform:translate(-100%,-50%)}
+.lbl.t{transform:translate(-50%,-100%)}
+.lbl.b{transform:translate(-50%,0)}
+.lbl.muted{color:var(--mt-ink-2)}
+.detail{position:absolute;right:16px;bottom:16px;width:268px;background:#FFFFFF;border:1px solid var(--mt-line);border-radius:8px;box-shadow:0 12px 32px rgba(22,23,26,.12);padding:16px;display:flex;flex-direction:column;gap:8px}
+.bar{height:6px;border-radius:3px;background:var(--mt-raised);overflow:hidden}
+.bar span{display:block;height:100%;border-radius:3px}
+.legend{position:absolute;left:16px;bottom:16px;display:flex;gap:16px;align-items:center;padding:8px 12px;background:rgba(255,255,255,.94);border:1px solid var(--mt-line);border-radius:8px;font-size:12px;color:var(--mt-ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.zoom{position:absolute;right:16px;top:16px;display:flex;flex-direction:column;border:1px solid var(--mt-line-strong);border-radius:6px;overflow:hidden;background:#FFFFFF}
+.zoom button{width:40px;height:40px;border:0;border-top:1px solid var(--mt-line);background:#FFFFFF;display:flex;align-items:center;justify-content:center;color:var(--mt-ink);cursor:pointer}
+.zoom button:first-child{border-top:0}
+.zoom button:hover{background:var(--mt-raised)}
+</style>
+</helmet>
+<div class="app mt-base">
+  <aside class="side">
+    <div class="brand">
+      <span class="av" aria-hidden="true">E</span>
+      <div style="display: flex; flex-direction: column">
+        <span style="font-weight: 600">Elmar</span>
+        <span style="font-size: 12px; color: var(--mt-ink-3)">Personal</span>
+      </div>
+    </div>
+    <button class="find" type="button">
+      <svg class="ico16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+      Search everything
+      <span class="kbd">⌘K</span>
+    </button>
+    <nav style="display: flex; flex-direction: column; gap: 2px" aria-label="Main">
+      <a class="nav" href="Main.dc.html">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"></path></svg>
+        Today<span class="count">4</span>
+      </a>
+      <a class="nav" href="Projects.dc.html">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg>
+        Projects<span class="count">5</span>
+      </a>
+      <a class="nav" href="Notes.dc.html">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"></path><path d="M14 2v5h5M8 13h8M8 17h5"></path></svg>
+        Notes
+      </a>
+      <a class="nav" href="Calendar.dc.html">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>
+        Calendar
+      </a>
+      <a class="nav on" href="Map.dc.html" aria-current="page">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.5"></circle><circle cx="5" cy="19" r="2.5"></circle><circle cx="19" cy="19" r="2.5"></circle><path d="M12 7.5v4M12 11.5 6.8 17.2M12 11.5l5.2 5.7"></path></svg>
+        Map
+      </a>
+    </nav>
+    <div class="sidelabel">Projects</div>
+    <a class="proj" href="Projects.dc.html"><span class="dot" style="background: #D64D1E"></span>Kitchen renovation</a>
+    <a class="proj" href="Projects.dc.html"><span class="dot" style="background: #16877A"></span>December in Knysna</a>
+    <a class="proj" href="Projects.dc.html"><span class="dot" style="background: #3A4FB0"></span>Cycle Tour 2027</a>
+    <a class="proj" href="Projects.dc.html"><span class="dot" style="background: #8F5B00"></span>Board pack Q4</a>
+    <a class="proj" href="Projects.dc.html"><span class="dot" style="background: #0E7A5C"></span>Garden irrigation</a>
+    <div class="sidefoot"><span class="okdot"></span>Saved on this Mac · iCloud Drive</div>
+  </aside>
+
+  <main class="main">
+    <div class="head">
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 6px">
+        <span class="meta">Everything you have on, and how it connects. Click anything.</span>
+        <h1 class="h1">Map</h1>
+      </div>
+      <sc-for list="{{chips}}" as="c" hint-placeholder-count="3">
+        <button class="chip" type="button" aria-pressed="{{c.pressed}}" onClick="{{c.toggle}}">{{c.label}}</button>
+      </sc-for>
+    </div>
+
+    <div class="mapwrap" role="group" aria-label="Map of projects, tasks and notes">
+      <sc-for list="{{edges}}" as="e" hint-placeholder-count="0">
+        <div class="{{e.cls}}" style="{{e.style}}"></div>
+      </sc-for>
+      <sc-for list="{{nodes}}" as="n" hint-placeholder-count="0">
+        <button class="{{n.cls}}" type="button" style="{{n.style}}" aria-label="{{n.aria}}" aria-pressed="{{n.pressed}}" onClick="{{n.pick}}">
+          <span class="ring" style="{{n.ringStyle}}"><span class="pin">{{n.inner}}</span></span>
+        </button>
+      </sc-for>
+      <sc-for list="{{labels}}" as="l" hint-placeholder-count="0">
+        <span class="{{l.cls}}" style="{{l.style}}">{{l.text}}</span>
+      </sc-for>
+
+      <div class="zoom" role="group" aria-label="Zoom">
+        <button type="button" aria-label="Zoom in"><svg class="ico16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+        <button type="button" aria-label="Zoom out"><svg class="ico16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+        <button type="button" aria-label="Fit everything"><svg class="ico16" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"></path></svg></button>
+      </div>
+
+      <div class="legend" aria-label="Key">
+        <span><span style="width: 14px; height: 14px; border-radius: 50%; background: conic-gradient(#D64D1E 55%, #E9E6DF 0)"></span>Project, ring shows progress</span>
+        <span><span style="width: 12px; height: 12px; border-radius: 50%; border: 2.5px solid #5A5852; background: #FFFFFF"></span>Task</span>
+        <span><span style="width: 12px; height: 12px; border-radius: 50%; background: #5A5852"></span>Done</span>
+        <span><span style="width: 13px; height: 13px; border-radius: 3px; border: 2px solid #5A5852; background: #FFFFFF"></span>Note</span>
+        <span><span style="width: 22px; border-top: 1.5px dashed #878379"></span>Mentions</span>
+      </div>
+
+      <div class="detail" aria-live="polite">
+        <span style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--mt-ink-2)"><span class="dot" style="{{detail.dotStyle}}"></span>{{detail.kicker}}</span>
+        <span style="font-family: Archivo, sans-serif; font-weight: 700; font-size: 18px; line-height: 24px">{{detail.title}}</span>
+        <sc-if value="{{detail.hasBar}}" hint-placeholder-val="{{true}}">
+          <span class="bar"><span style="{{detail.barStyle}}"></span></span>
+        </sc-if>
+        <sc-for list="{{detail.lines}}" as="line" hint-placeholder-count="2">
+          <span style="font-size: 13px; line-height: 18px; color: var(--mt-ink-2)">{{line}}</span>
+        </sc-for>
+        <a class="btn" href="{{detail.href}}" style="align-self: flex-start; margin-top: 4px">{{detail.cta}}</a>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const st = this.state || {};
+    const sel = st.sel || 'p1';
+    const show = Object.assign({ tasks: true, notes: true, someday: true }, st.show || {});
+    const C = { x: 440, y: 380 };
+    const RX = 285, RY = 250, KR = 86;
+    const P = [
+      { id: 'p1', name: 'Kitchen renovation', color: '#D64D1E', status: 'On the go', done: 6, total: 11, next: 'Choose tiles at the showroom', ang: -90, kids: [
+        { id: 'k1', kind: 'task', title: 'Call Pieter about the countertop quote' },
+        { id: 'k2', kind: 'task', title: 'Choose tiles at the showroom' },
+        { id: 'k3', kind: 'task', title: 'Ask Pieter about lead time' },
+        { id: 'k4', kind: 'task', title: 'Measure the wall for the larder', done: true },
+        { id: 'k5', kind: 'task', title: 'Get three quotes', done: true },
+        { id: 'k6', kind: 'note', title: 'Kitchen: quotes and ideas' },
+        { id: 'k7', kind: 'note', title: 'Appliance shortlist' }
+      ] },
+      { id: 'p2', name: 'December in Knysna', color: '#16877A', status: 'On the go', done: 3, total: 8, next: 'Book flights for December', ang: -38.6, kids: [
+        { id: 'n1', kind: 'task', title: 'Pay the accommodation deposit' },
+        { id: 'n2', kind: 'task', title: 'Book flights for December' },
+        { id: 'n3', kind: 'task', title: 'Ask the neighbours about the garden' },
+        { id: 'n4', kind: 'note', title: 'Knysna packing list' },
+        { id: 'n5', kind: 'note', title: 'Places to eat' }
+      ] },
+      { id: 'p3', name: 'Board pack Q4', color: '#8F5B00', status: 'On the go', done: 2, total: 5, next: 'Send the board pack to directors', ang: 12.9, kids: [
+        { id: 'b1', kind: 'task', title: 'Read the Q4 board pack draft' },
+        { id: 'b2', kind: 'task', title: 'Send the board pack to directors' },
+        { id: 'b3', kind: 'note', title: 'Leadership check-in, 27 Oct' }
+      ] },
+      { id: 'p4', name: 'Cycle Tour 2027', color: '#3A4FB0', status: 'On the go', done: 9, total: 20, next: 'Hill session on Wednesday', ang: 64.3, kids: [
+        { id: 'c1', kind: 'task', title: 'Hill session on Wednesday' },
+        { id: 'c2', kind: 'task', title: 'Long ride, 80 km' },
+        { id: 'c3', kind: 'task', title: 'Book a bike service' },
+        { id: 'c4', kind: 'task', title: "60 km ride, Chapman's Peak", done: true },
+        { id: 'c5', kind: 'note', title: 'Cycle Tour training plan' }
+      ] },
+      { id: 'p5', name: 'Garden irrigation', color: '#0E7A5C', status: 'On hold', done: 1, total: 4, next: "Waiting for the installer's quote", ang: 115.7, kids: [
+        { id: 'g1', kind: 'task', title: "Get the installer's quote" }
+      ] },
+      { id: 'p6', name: 'Learn to sail', color: '#6B6963', status: 'Someday', done: 0, total: 0, next: 'An idea for now', ang: 167.1, someday: true, kids: [
+        { id: 's1', kind: 'note', title: 'Sailing schools' }
+      ] },
+      { id: 'p7', name: 'Family photo books', color: '#6B6963', status: 'Someday', done: 0, total: 0, next: 'One book per year, starting with 2024', ang: 218.6, someday: true, kids: [] }
+    ];
+    const loose = [
+      { id: 'o1', title: 'Thoughts on 2027', from: 'From Evernote', x: 610, y: 505, links: ['p4', 'p3'] },
+      { id: 'o2', title: 'Braai marinade', from: 'Recipes', x: 930, y: 130, links: [] }
+    ];
+
+    const rad = (d) => (d * Math.PI) / 180;
+    const pick = (id) => () => this.setState({ sel: id });
+    const nodes = [], edges = [], labels = [];
+    const edge = (a, b, cls) => {
+      const dx = b.x - a.x, dy = b.y - a.y;
+      edges.push({ cls: 'edge ' + cls, style: 'left:' + a.x + 'px;top:' + a.y + 'px;width:' + Math.hypot(dx, dy).toFixed(1) + 'px;transform:rotate(' + Math.atan2(dy, dx).toFixed(4) + 'rad)' });
+    };
+    const label = (x, y, text, cls) => labels.push({ cls: 'lbl ' + cls, style: 'left:' + x.toFixed(0) + 'px;top:' + y.toFixed(0) + 'px', text });
+    const at = (x, y) => 'left:' + x.toFixed(1) + 'px;top:' + y.toFixed(1) + 'px';
+
+    const visible = P.filter((p) => show.someday || !p.someday);
+    let active = null, detail = null;
+    visible.forEach((p) => { if (p.id === sel || p.kids.some((k) => k.id === sel)) active = p.id; });
+
+    let openTasks = 0, notesOnMap = 0;
+    visible.forEach((p) => {
+      const a = rad(p.ang);
+      const pos = { x: C.x + RX * Math.cos(a), y: C.y + RY * Math.sin(a) };
+      const isActive = active === p.id;
+      edge(C, pos, 'hub' + (isActive ? ' on' : ''));
+      const pct = p.total ? Math.round((p.done / p.total) * 100) : 0;
+      nodes.push({
+        cls: 'node proj' + (sel === p.id ? ' on' : ''), style: at(pos.x, pos.y), aria: p.name + ', ' + p.status,
+        pressed: sel === p.id ? 'true' : 'false', pick: pick(p.id), inner: p.total ? p.done + '/' + p.total : '',
+        ringStyle: p.someday ? 'background:#FFFFFF;border:2px dashed #878379' : 'background:conic-gradient(' + p.color + ' ' + pct + '%, #E9E6DF 0)'
+      });
+      label(pos.x - 52 * Math.cos(a), pos.y - 52 * Math.sin(a), p.status === 'On hold' ? p.name + ' · on hold' : p.name, 'mid' + (p.someday ? ' muted' : ''));
+      if (sel === p.id) {
+        detail = { kicker: 'Project · ' + p.status, title: p.name, dotStyle: 'background:' + p.color, hasBar: p.total > 0,
+          barStyle: 'width:' + pct + '%;background:' + p.color,
+          lines: [p.total ? p.done + ' of ' + p.total + ' tasks done' : 'No tasks yet', 'Next: ' + p.next, p.kids.filter((k) => k.kind === 'note').length + ' notes'],
+          cta: 'Open project', href: 'Projects.dc.html' };
+      }
+      const kids = p.kids.filter((k) => (k.kind === 'task' ? show.tasks : show.notes));
+      const n = kids.length;
+      const span = n > 1 ? Math.min(150, (n - 1) * 30) : 0;
+      kids.forEach((k, i) => {
+        const ca = rad(p.ang - span / 2 + (n > 1 ? (i * span) / (n - 1) : 0));
+        const kp = { x: pos.x + KR * Math.cos(ca), y: pos.y + KR * Math.sin(ca) };
+        const dim = active && !isActive;
+        edge(pos, kp, 'kid' + (isActive ? ' on' : '') + (dim ? ' dim' : ''));
+        if (k.kind === 'task' && !k.done) openTasks++;
+        if (k.kind === 'note') notesOnMap++;
+        const ring = k.kind === 'note'
+          ? 'background:#FFFFFF;border:2px solid ' + p.color
+          : (k.done ? 'background:' + p.color + ';border:2.5px solid ' + p.color : 'background:#FFFFFF;border:2.5px solid ' + p.color);
+        nodes.push({
+          cls: 'node ' + k.kind + (sel === k.id ? ' on' : '') + (dim ? ' dim' : ''), style: at(kp.x, kp.y),
+          aria: (k.kind === 'note' ? 'Note: ' : k.done ? 'Done: ' : 'Task: ') + k.title, pressed: sel === k.id ? 'true' : 'false',
+          pick: pick(k.id), inner: '', ringStyle: ring
+        });
+        if (isActive) {
+          const c = Math.cos(ca), s = Math.sin(ca);
+          const lx = kp.x + 16 * c, ly = kp.y + 16 * s;
+          label(lx, ly, k.title, c > 0.35 ? 'r' : c < -0.35 ? 'l' : s > 0 ? 'b' : 't');
+        }
+        if (sel === k.id) {
+          detail = { kicker: k.kind === 'note' ? 'Note' : k.done ? 'Task · done' : 'Task', title: k.title, dotStyle: 'background:' + p.color, hasBar: false, barStyle: '',
+            lines: ['In ' + p.name, k.kind === 'note' ? 'Edited this week' : k.done ? 'Ticked off' : 'Still to do'],
+            cta: k.kind === 'note' ? 'Open note' : 'Open in Today', href: k.kind === 'note' ? 'Notes.dc.html' : 'Main.dc.html' };
+        }
+      });
+      p.pos = pos;
+    });
+
+    if (show.notes) {
+      loose.forEach((o) => {
+        o.links.forEach((pid) => { const p = visible.find((q) => q.id === pid); if (p) edge({ x: o.x, y: o.y }, p.pos, 'link'); });
+        notesOnMap++;
+        nodes.push({ cls: 'node note' + (sel === o.id ? ' on' : ''), style: at(o.x, o.y), aria: 'Note: ' + o.title, pressed: sel === o.id ? 'true' : 'false',
+          pick: pick(o.id), inner: '', ringStyle: 'background:#FFFFFF;border:2px solid #5A5852' });
+        label(o.x, o.y + 14, o.title, 'b');
+        if (sel === o.id) {
+          const names = o.links.map((id) => (P.find((q) => q.id === id) || {}).name).filter(Boolean);
+          detail = { kicker: 'Note · ' + o.from, title: o.title, dotStyle: 'background:#5A5852', hasBar: false, barStyle: '',
+            lines: [names.length ? 'Mentions ' + names.join(' and ') : 'Not in a project yet', o.from === 'From Evernote' ? 'Imported 28 Oct' : 'In Recipes'],
+            cta: 'Open note', href: 'Notes.dc.html' };
+        }
+      });
+    }
+
+    nodes.unshift({ cls: 'node me' + (sel === 'me' ? ' on' : ''), style: at(C.x, C.y), aria: 'Elmar, everything', pressed: sel === 'me' ? 'true' : 'false', pick: pick('me'), inner: 'E', ringStyle: '' });
+    label(C.x, C.y + 48, 'Elmar', 'b');
+    if (!detail) {
+      detail = { kicker: 'Everything', title: 'Elmar', dotStyle: 'background:#16171A', hasBar: false, barStyle: '',
+        lines: [visible.length + ' projects, ' + visible.filter((p) => p.status === 'On the go').length + ' on the go', openTasks + ' open tasks on the map', notesOnMap + ' notes'],
+        cta: 'Open Today', href: 'Main.dc.html' };
+    }
+
+    const toggle = (key) => () => { const s = Object.assign({}, show); s[key] = !s[key]; this.setState({ show: s }); };
+    const chips = [{ key: 'tasks', label: 'Tasks' }, { key: 'notes', label: 'Notes' }, { key: 'someday', label: 'Someday' }]
+      .map((c) => ({ label: c.label, pressed: show[c.key] ? 'true' : 'false', toggle: toggle(c.key) }));
+
+    return { nodes, edges, labels, detail, chips };
+  }
+}
+</script>
+</body>
+</html>

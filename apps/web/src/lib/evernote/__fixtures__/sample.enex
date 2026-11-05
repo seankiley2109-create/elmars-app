@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE en-export SYSTEM "http://xml.evernote.com/pub/evernote-export4.dtd">
+<en-export export-date="20231101T120000Z" application="Evernote" version="10.62.4">
+  <note>
+    <title>Formatting tour</title>
+    <created>20231014T091500Z</created>
+    <updated>20231015T183045Z</updated>
+    <tag>work</tag>
+    <tag>reference</tag>
+    <note-attributes>
+      <author>Elmar</author>
+    </note-attributes>
+    <content>
+      <![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">
+<en-note>
+<h1>Heading one</h1>
+<h2>Heading two</h2>
+<h3>Heading three</h3>
+<h4>Heading four</h4>
+<h5>Heading five</h5>
+<h6>Heading six</h6>
+<p>A paragraph with <b>bold</b>, <strong>strong</strong>, <i>italic</i>, <em>emphasis</em> and <u>underlined</u> words.</p>
+<div>First line<br/>Second line</div>
+<div>See <a href="https://example.com/docs">the docs</a> for more.</div>
+<div><span style="color:#ff0000;font-weight:bold">Red span</span> and <font color="blue" face="Courier">blue font</font> text.</div>
+<div><en-todo checked="false"/>Call the plumber</div>
+<div><en-todo checked="true"/>Pay the rent</div>
+<table><tr><th>Item</th><th>Qty</th></tr><tr><td>Eggs</td><td>12</td></tr></table>
+<ul><li>Apples</li><li>Pears<ul><li>Conference</li><li>Williams</li></ul></li></ul>
+<ol><li>First</li><li>Second<ol><li>Second A</li></ol></li></ol>
+<hr/>
+<div>The end.</div>
+</en-note>]]>
+    </content>
+  </note>
+  <note>
+    <title>Receipts</title>
+    <created>20231016T101500Z</created>
+    <updated>20231016T101500Z</updated>
+    <tag>travel</tag>
+    <content>
+      <![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">
+<en-note><div>Hotel receipt and boarding pass:</div><div><en-media hash="b357a19c87624c7c4d131aeeb4ae677f" type="image/png"/></div><div><en-media hash="d163124b385f9cbfc33988e452bf7b30" type="application/pdf"/></div></en-note>]]>
+    </content>
+    <resource>
+      <data encoding="base64">
+iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6
+kgAAAABJRU5ErkJggg==
+      </data>
+      <mime>image/png</mime>
+      <width>1</width>
+      <height>1</height>
+      <resource-attributes>
+        <file-name>dot.png</file-name>
+      </resource-attributes>
+    </resource>
+    <resource>
+      <data encoding="base64">
+JVBERi0xLjQKJeLjz9MKMSAwIG9iajw8Pj5lbmRvYmoKdHJhaWxlcjw8Pj4KJSVFT0YK
+      </data>
+      <mime>application/pdf</mime>
+      <resource-attributes>
+        <file-name>boarding_pass.pdf</file-name>
+      </resource-attributes>
+    </resource>
+  </note>
+  <note>
+    <title>Locked note</title>
+    <created>20231017T080000Z</created>
+    <updated>20231017T080000Z</updated>
+    <content>
+      <![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">
+<en-note><div>Before the secret.</div><en-crypt hint="birthday" cipher="AES" length="128">RGVhZEJlZWZDYWZlQmFiZQ==</en-crypt><div>After the secret.</div></en-note>]]>
+    </content>
+  </note>
+  <note>
+    <title>Budget table</title>
+    <created>20231018T080000Z</created>
+    <updated>20231018T090000Z</updated>
+    <tag>finance</tag>
+    <content>
+      <![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">
+<en-note><table><tr><td colspan="2">Q1 budget</td></tr><tr><td>Rent</td><td>1200</td></tr></table></en-note>]]>
+    </content>
+  </note>
+  <note>
+    <title>Groceries</title>
+    <created>20231019T070000Z</created>
+    <updated>20231019T071500Z</updated>
+    <tag>home</tag>
+    <note-attributes>
+      <reminder-order>1697699700000</reminder-order>
+      <reminder-time>20231019T170000Z</reminder-time>
+    </note-attributes>
+    <content>
+      <![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">
+<en-note><div>Weekly shop</div></en-note>]]>
+    </content>
+    <task>
+      <title>Buy milk</title>
+      <created>20231019T070100Z</created>
+      <updated>20231019T090000Z</updated>
+      <taskStatus>completed</taskStatus>
+      <inNote>true</inNote>
+      <taskFlag>false</taskFlag>
+      <sortWeight>A</sortWeight>
+      <statusUpdated>20231019T090000Z</statusUpdated>
+    </task>
+    <task>
+      <title>Book dentist</title>
+      <created>20231019T070200Z</created>
+      <updated>20231019T070200Z</updated>
+      <taskStatus>open</taskStatus>
+      <inNote>true</inNote>
+      <taskFlag>true</taskFlag>
+      <sortWeight>B</sortWeight>
+      <dueDate>20231020T000000Z</dueDate>
+      <dueDateUIOption>date_only</dueDateUIOption>
+    </task>
+  </note>
+  <note>
+    <title>Standup</title>
+    <created>20230102T080000Z</created>
+    <updated>20230102T083000Z</updated>
+    <tag>work</tag>
+    <content>
+      <![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">
+<en-note><div>Monday standup.</div></en-note>]]>
+    </content>
+  </note>
+  <note>
+    <title>Standup</title>
+    <created>20230109T080000Z</created>
+    <updated>20230109T083000Z</updated>
+    <tag>work</tag>
+    <content>
+      <![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">
+<en-note><div>Next Monday standup.</div></en-note>]]>
+    </content>
+  </note>
+  <note>
+    <title>Café 👍 שלום</title>
+    <created>20231020T120000Z</created>
+    <updated>20231020T120000Z</updated>
+    <tag>personal</tag>
+    <content>
+      <![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">
+<en-note><div>Café au lait 👍 — שלום עולם</div></en-note>]]>
+    </content>
+  </note>
+</en-export>

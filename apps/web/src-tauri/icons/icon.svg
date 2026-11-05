@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Ink tile with a white "E". The E is the Archivo ExtraBold (800) glyph outline, converted to a path. -->
+  <rect width="1024" height="1024" rx="224" ry="224" fill="#16171A"/>
+  <path fill="#FFFFFF" transform="translate(235.5 773) scale(0.76 -0.76)" d="M77 0V687H644V547H256V418H595V281H256V140H651V0Z"/>
+</svg>

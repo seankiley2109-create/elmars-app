@@ -1,0 +1,57 @@
+name: Build Mac app
+
+# Builds a universal (Apple silicon + Intel) .dmg for Elmar's App.
+# The app is ad-hoc signed (signingIdentity "-" in tauri.conf.json). There are no
+# Apple certificates or signing keys here, on purpose: first launch goes through
+# System Settings -> Privacy & Security -> "Open Anyway".
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Set up Rust (both Mac targets)
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+
+      - name: Cache Rust build
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: apps/web/src-tauri
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build the universal app
+        uses: tauri-apps/tauri-action@v0
+        with:
+          projectPath: apps/web
+          args: --target universal-apple-darwin
+
+      - name: Upload the .dmg
+        uses: actions/upload-artifact@v4
+        with:
+          name: elmars-app-dmg
+          path: apps/web/src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg
+          if-no-files-found: error

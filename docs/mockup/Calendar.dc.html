@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Calendar</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/montana/components/bundle.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&amp;family=IBM+Plex+Mono:wght@500&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#B8175F}a:hover{color:#A8175A}
+.app{--mt-paper:#F6F5F1;--mt-panel:#FFFFFF;--mt-raised:#EFEDE7;--mt-line:#E2DFD7;--mt-line-strong:#878379;--mt-ink:#16171A;--mt-ink-2:#5A5852;--mt-ink-3:#6B6963;--mt-action:#C21E62;--mt-on-action:#FFFFFF;--mt-action-hover:#A8175A;--mt-accent-text:#B8175F;--mt-focus:#C21E62;--mt-ok:#0E7A5C;--mt-ok-bg:#E1F2EA;color-scheme:light;width:1440px;height:900px;display:flex;background:var(--mt-paper);color:var(--mt-ink);font-family:Inter,system-ui,-apple-system,sans-serif;font-size:14px;line-height:20px;overflow:hidden;box-sizing:border-box}
+.app *{box-sizing:border-box}
+.side{width:240px;flex:none;background:var(--mt-panel);border-right:1px solid var(--mt-line);display:flex;flex-direction:column;padding:20px 12px 0}
+.brand{display:flex;align-items:center;gap:10px;padding:0 8px 16px}
+.av{width:32px;height:32px;border-radius:8px;background:var(--mt-ink);color:#fff;display:flex;align-items:center;justify-content:center;font-family:Archivo,sans-serif;font-weight:700}
+.find{display:flex;align-items:center;gap:8px;height:40px;width:100%;padding:0 10px;border:1px solid var(--mt-line-strong);border-radius:6px;color:var(--mt-ink-2);background:var(--mt-paper);margin-bottom:16px;font:inherit;text-align:left;cursor:pointer}
+.kbd{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:11px;line-height:18px;color:var(--mt-ink-2);border:1px solid var(--mt-line);border-radius:4px;padding:0 5px;background:var(--mt-panel)}
+.nav{position:relative;display:flex;align-items:center;gap:12px;height:44px;padding:0 12px;border-radius:6px;color:var(--mt-ink-2);text-decoration:none;font-weight:500}
+.nav:hover{background:var(--mt-raised);color:var(--mt-ink)}
+.nav.on{background:var(--mt-raised);color:var(--mt-ink);font-weight:600}
+.nav.on::before{content:"";position:absolute;left:-12px;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:linear-gradient(180deg,#F20274,#F57939)}
+.ico{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.ico16{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.count{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--mt-ink-3);font-weight:500}
+.sidelabel{font-size:12px;color:var(--mt-ink-3);padding:20px 12px 6px}
+.proj{display:flex;align-items:center;gap:10px;height:36px;padding:0 12px;border-radius:6px;color:var(--mt-ink);text-decoration:none;font-size:13px}
+.proj:hover{background:var(--mt-raised);color:var(--mt-ink)}
+.dot{width:10px;height:10px;border-radius:3px;flex:none;display:inline-block}
+.sidefoot{margin-top:auto;display:flex;align-items:center;gap:8px;padding:14px 12px;font-size:12px;color:var(--mt-ink-2);border-top:1px solid var(--mt-line)}
+.okdot{width:8px;height:8px;border-radius:50%;background:var(--mt-ok);flex:none}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;padding:28px 40px 28px;gap:18px}
+.head{display:flex;align-items:flex-end;gap:12px}
+.h1{font-family:Archivo,sans-serif;font-weight:800;font-size:36px;line-height:40px;margin:0;letter-spacing:-0.02em}
+.meta{font-size:13px;color:var(--mt-ink-2)}
+.btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:6px;border:1px solid var(--mt-line-strong);background:var(--mt-panel);color:var(--mt-ink);font:inherit;font-weight:600;cursor:pointer;text-decoration:none}
+.btn:hover{background:var(--mt-raised)}
+.btn.primary{background:var(--mt-action);border-color:var(--mt-action);color:var(--mt-on-action)}
+.btn.primary:hover{background:var(--mt-action-hover)}
+.iconbtn{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--mt-line-strong);border-radius:6px;background:var(--mt-panel);color:var(--mt-ink);cursor:pointer}
+.iconbtn:hover{background:var(--mt-raised)}
+.seg{display:inline-flex;border:1px solid var(--mt-line-strong);border-radius:6px;overflow:hidden;background:var(--mt-panel)}
+.seg button{height:38px;padding:0 14px;border:0;border-left:1px solid var(--mt-line);background:transparent;font:inherit;color:var(--mt-ink-2);cursor:pointer}
+.seg button:first-child{border-left:0}
+.seg button[aria-pressed="true"]{background:var(--mt-raised);color:var(--mt-ink);font-weight:600}
+.mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-weight:500}
+.cal{flex:1;min-height:0;background:var(--mt-panel);border:1px solid var(--mt-line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
+.row{display:grid;grid-template-columns:60px repeat(7,minmax(0,1fr))}
+.dayhead{display:flex;align-items:center;gap:8px;height:52px;padding:0 12px;border-left:1px solid var(--mt-line);font-size:13px;color:var(--mt-ink-2)}
+.daynum{font-family:"IBM Plex Mono",monospace;font-weight:500;font-size:15px;color:var(--mt-ink);width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center}
+.today .daynum{background:var(--mt-ink);color:#fff}
+.today{color:var(--mt-ink);font-weight:600}
+.allday{min-height:40px;padding:6px;border-left:1px solid var(--mt-line);border-top:1px solid var(--mt-line);display:flex;flex-direction:column;gap:4px}
+.due{display:flex;align-items:center;gap:6px;height:24px;padding:0 8px;border-radius:4px;background:var(--mt-raised);font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.due input{width:14px;height:14px;margin:0;accent-color:#16171A}
+.hours{display:flex;flex-direction:column;border-top:1px solid var(--mt-line)}
+.hr{height:54px;font-size:11px;color:var(--mt-ink-3);text-align:right;padding:0 10px 0 0;transform:translateY(-8px)}
+.day{position:relative;height:648px;border-left:1px solid var(--mt-line);border-top:1px solid var(--mt-line);background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 53px,#EEECE6 53px,#EEECE6 54px)}
+.day.isToday{background-color:#FBFAF7}
+.ev{position:absolute;left:4px;right:4px;border-radius:6px;padding:6px 8px;display:flex;flex-direction:column;gap:1px;overflow:hidden;font-size:12px;line-height:16px;color:var(--mt-ink)}
+.ev b{font-weight:600;font-size:13px;line-height:17px}
+.ev .t{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--mt-ink-2)}
+.now{position:absolute;left:0;right:0;height:2px;background:var(--mt-ink)}
+.now::before{content:"";position:absolute;left:-5px;top:-4px;width:10px;height:10px;border-radius:50%;background:var(--mt-ink)}
+</style>
+</helmet>
+<div class="app mt-base">
+  <aside class="side">
+    <div class="brand">
+      <span class="av" aria-hidden="true">E</span>
+      <div style="display: flex; flex-direction: column">
+        <span style="font-weight: 600">Elmar</span>
+        <span style="font-size: 12px; color: var(--mt-ink-3)">Personal</span>
+      </div>
+    </div>
+    <button class="find" type="button">
+      <svg class="ico16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+      Search everything
+      <span class="kbd">⌘K</span>
+    </button>
+    <nav style="display: flex; flex-direction: column; gap: 2px" aria-label="Main">
+      <a class="nav" href="Main.dc.html">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"></path></svg>
+        Today<span class="count">4</span>
+      </a>
+      <a class="nav" href="Projects.dc.html">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg>
+        Projects<span class="count">5</span>
+      </a>
+      <a class="nav" href="Notes.dc.html">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"></path><path d="M14 2v5h5M8 13h8M8 17h5"></path></svg>
+        Notes
+      </a>
+      <a class="nav on" href="Calendar.dc.html" aria-current="page">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>
+        Calendar
+      </a>
+      <a class="nav" href="Map.dc.html">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.5"></circle><circle cx="5" cy="19" r="2.5"></circle><circle cx="19" cy="19" r="2.5"></circle><path d="M12 7.5v4M12 11.5 6.8 17.2M12 11.5l5.2 5.7"></path></svg>
+        Map
+      </a>
+    </nav>
+    <div class="sidelabel">Projects</div>
+    <a class="proj" href="Projects.dc.html"><span class="dot" style="background: #D64D1E"></span>Kitchen renovation</a>
+    <a class="proj" href="Projects.dc.html"><span class="dot" style="background: #16877A"></span>December in Knysna</a>
+    <a class="proj" href="Projects.dc.html"><span class="dot" style="background: #3A4FB0"></span>Cycle Tour 2027</a>
+    <a class="proj" href="Projects.dc.html"><span class="dot" style="background: #8F5B00"></span>Board pack Q4</a>
+    <a class="proj" href="Projects.dc.html"><span class="dot" style="background: #0E7A5C"></span>Garden irrigation</a>
+    <div class="sidefoot"><span class="okdot"></span>Saved on this Mac · iCloud Drive</div>
+  </aside>
+
+  <main class="main">
+    <div class="head">
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 6px">
+        <span class="meta">Your Mac's calendars, with dated tasks along the top</span>
+        <h1 class="h1">November 2026</h1>
+      </div>
+      <button class="iconbtn" type="button" aria-label="Previous week"><svg class="ico16" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
+      <button class="btn" type="button">Today</button>
+      <button class="iconbtn" type="button" aria-label="Next week"><svg class="ico16" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button>
+      <div class="seg" role="group" aria-label="Range">
+        <button type="button" aria-pressed="{{dayOn}}" onClick="{{showDay}}">Day</button>
+        <button type="button" aria-pressed="{{weekOn}}" onClick="{{showWeek}}">Week</button>
+        <button type="button" aria-pressed="{{monthOn}}" onClick="{{showMonth}}">Month</button>
+      </div>
+      <button class="btn primary" type="button">
+        <svg class="ico16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+        New event
+      </button>
+    </div>
+
+    <div class="cal">
+      <div class="row">
+        <div></div>
+        <div class="dayhead">Mon <span class="daynum">2</span></div>
+        <div class="dayhead today">Tue <span class="daynum">3</span></div>
+        <div class="dayhead">Wed <span class="daynum">4</span></div>
+        <div class="dayhead">Thu <span class="daynum">5</span></div>
+        <div class="dayhead">Fri <span class="daynum">6</span></div>
+        <div class="dayhead">Sat <span class="daynum">7</span></div>
+        <div class="dayhead">Sun <span class="daynum">8</span></div>
+      </div>
+      <div class="row">
+        <div style="font-size: 11px; color: var(--mt-ink-3); text-align: right; padding: 10px 10px 0 0; border-top: 1px solid var(--mt-line)">Due</div>
+        <div class="allday"></div>
+        <div class="allday">
+          <label class="due"><input type="checkbox"><span class="dot" style="background: #D64D1E; width: 8px; height: 8px"></span>Call Pieter</label>
+          <label class="due"><input type="checkbox"><span class="dot" style="background: #16877A; width: 8px; height: 8px"></span>Knysna deposit</label>
+        </div>
+        <div class="allday"></div>
+        <div class="allday">
+          <label class="due"><input type="checkbox"><span class="dot" style="background: #16877A; width: 8px; height: 8px"></span>Book flights</label>
+        </div>
+        <div class="allday">
+          <label class="due"><input type="checkbox"><span class="dot" style="background: #D64D1E; width: 8px; height: 8px"></span>Choose tiles</label>
+        </div>
+        <div class="allday"></div>
+        <div class="allday"></div>
+      </div>
+      <div class="row">
+        <div class="hours">
+          <div class="hr mono" style="transform: none; padding-top: 2px">07:00</div>
+          <div class="hr mono">08:00</div>
+          <div class="hr mono">09:00</div>
+          <div class="hr mono">10:00</div>
+          <div class="hr mono">11:00</div>
+          <div class="hr mono">12:00</div>
+          <div class="hr mono">13:00</div>
+          <div class="hr mono">14:00</div>
+          <div class="hr mono">15:00</div>
+          <div class="hr mono">16:00</div>
+          <div class="hr mono">17:00</div>
+          <div class="hr mono">18:00</div>
+        </div>
+
+        <div class="day">
+          <div class="ev" style="top: 108px; height: 52px; background: #EFEDE7"><b>Weekly planning</b><span class="t">09:00</span></div>
+          <div class="ev" style="top: 594px; height: 52px; background: #E6EAF8"><b>Easy hour on the bike</b><span class="t">18:00</span></div>
+        </div>
+
+        <div class="day isToday">
+          <div class="ev" style="top: 81px; height: 40px; background: #EFEDE7"><b>Leadership check-in</b><span class="t">08:30</span></div>
+          <div class="ev" style="top: 216px; height: 52px; background: #EFEDE7"><b>Dentist</b><span class="t">11:00 · Durbanville</span></div>
+          <div class="ev" style="top: 324px; height: 79px; background: #EFEDE7"><b>Lunch with Sarah</b><span class="t">13:00 · Cassia</span></div>
+          <div class="ev" style="top: 513px; height: 52px; background: #FCEBE4"><b>Kitchen site visit</b><span class="t">16:30 · Home</span></div>
+          <div class="now" style="top: 58px" aria-label="Now, 08:05"></div>
+        </div>
+
+        <div class="day">
+          <div class="ev" style="top: 0; height: 79px; background: #E6EAF8"><b>Hill session</b><span class="t">07:00 · Tygerberg</span></div>
+          <div class="ev" style="top: 378px; height: 52px; background: #EFEDE7"><b>Call with the accountant</b><span class="t">14:00</span></div>
+        </div>
+
+        <div class="day">
+          <div class="ev" style="top: 162px; height: 79px; background: #FAEFD5"><b>Board pack review</b><span class="t">10:00 · Office</span></div>
+        </div>
+
+        <div class="day">
+          <div class="ev" style="top: 54px; height: 52px; background: #FCEBE4"><b>Tile showroom</b><span class="t">08:00</span></div>
+          <div class="ev" style="top: 297px; height: 79px; background: #EFEDE7"><b>Team lunch</b><span class="t">12:30</span></div>
+        </div>
+
+        <div class="day">
+          <div class="ev" style="top: 0; height: 214px; background: #E6EAF8"><b>Long ride, 80 km</b><span class="t">07:00 · Chapman's Peak</span></div>
+        </div>
+
+        <div class="day">
+          <div class="ev" style="top: 270px; height: 160px; background: #E1F2EA"><b>Family lunch</b><span class="t">12:00 · Home</span></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const range = (this.state && this.state.range) || 'week';
+    return {
+      dayOn: range === 'day' ? 'true' : 'false',
+      weekOn: range === 'week' ? 'true' : 'false',
+      monthOn: range === 'month' ? 'true' : 'false',
+      showDay: () => this.setState({ range: 'day' }),
+      showWeek: () => this.setState({ range: 'week' }),
+      showMonth: () => this.setState({ range: 'month' })
+    };
+  }
+}
+</script>
+</body>
+</html>

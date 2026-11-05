@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Notes</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/montana/components/bundle.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&amp;family=IBM+Plex+Mono:wght@500&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#B8175F}a:hover{color:#A8175A}
+.app{--mt-paper:#F6F5F1;--mt-panel:#FFFFFF;--mt-raised:#EFEDE7;--mt-line:#E2DFD7;--mt-line-strong:#878379;--mt-ink:#16171A;--mt-ink-2:#5A5852;--mt-ink-3:#6B6963;--mt-action:#C21E62;--mt-on-action:#FFFFFF;--mt-action-hover:#A8175A;--mt-accent-text:#B8175F;--mt-action-tint:#FBE7EF;--mt-focus:#C21E62;--mt-ok:#0E7A5C;--mt-ok-bg:#E1F2EA;--mt-soon:#3A4FB0;--mt-soon-bg:#E6EAF8;color-scheme:light;width:1440px;height:900px;display:flex;background:var(--mt-paper);color:var(--mt-ink);font-family:Inter,system-ui,-apple-system,sans-serif;font-size:14px;line-height:20px;overflow:hidden;box-sizing:border-box}
+.app *{box-sizing:border-box}
+.side{width:240px;flex:none;background:var(--mt-panel);border-right:1px solid var(--mt-line);display:flex;flex-direction:column;padding:20px 12px 0}
+.brand{display:flex;align-items:center;gap:10px;padding:0 8px 16px}
+.av{width:32px;height:32px;border-radius:8px;background:var(--mt-ink);color:#fff;display:flex;align-items:center;justify-content:center;font-family:Archivo,sans-serif;font-weight:700}
+.find{display:flex;align-items:center;gap:8px;height:40px;width:100%;padding:0 10px;border:1px solid var(--mt-line-strong);border-radius:6px;color:var(--mt-ink-2);background:var(--mt-paper);margin-bottom:16px;font:inherit;text-align:left;cursor:pointer}
+.kbd{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:11px;line-height:18px;color:var(--mt-ink-2);border:1px solid var(--mt-line);border-radius:4px;padding:0 5px;background:var(--mt-panel)}
+.nav{position:relative;display:flex;align-items:center;gap:12px;height:44px;padding:0 12px;border-radius:6px;color:var(--mt-ink-2);text-decoration:none;font-weight:500}
+.nav:hover{background:var(--mt-raised);color:var(--mt-ink)}
+.nav.on{background:var(--mt-raised);color:var(--mt-ink);font-weight:600}
+.nav.on::before{content:"";position:absolute;left:-12px;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:linear-gradient(180deg,#F20274,#F57939)}
+.ico{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.ico16{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.count{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--mt-ink-3);font-weight:500}
+.sidelabel{font-size:12px;color:var(--mt-ink-3);padding:20px 12px 6px}
+.proj{display:flex;align-items:center;gap:10px;height:36px;padding:0 12px;border-radius:6px;color:var(--mt-ink);text-decoration:none;font-size:13px}
+.proj:hover{background:var(--mt-raised);color:var(--mt-ink)}
+.dot{width:10px;height:10px;border-radius:3px;flex:none;display:inline-block}
+.sidefoot{margin-top:auto;display:flex;align-items:center;gap:8px;padding:14px 12px;font-size:12px;color:var(--mt-ink-2);border-top:1px solid var(--mt-line)}
+.okdot{width:8px;height:8px;border-radius:50%;background:var(--mt-ok);flex:none}
+.mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-weight:500}
+.btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:6px;border:1px solid var(--mt-line-strong);background:var(--mt-panel);color:var(--mt-ink);font:inherit;font-weight:600;cursor:pointer;text-decoration:none}
+.btn.primary{background:var(--mt-action);border-color:var(--mt-action);color:var(--mt-on-action)}
+.btn.primary:hover{background:var(--mt-action-hover)}
+.books{width:236px;flex:none;border-right:1px solid var(--mt-line);display:flex;flex-direction:column;padding:24px 12px;gap:2px;background:var(--mt-paper)}
+.bk{display:flex;align-items:center;gap:10px;height:40px;padding:0 12px;border-radius:6px;color:var(--mt-ink);text-decoration:none;font-size:13px;font-weight:500;border:0;background:transparent;font-family:inherit;width:100%;text-align:left;cursor:pointer}
+.bk:hover{background:var(--mt-raised)}
+.bk.on{background:var(--mt-panel);box-shadow:inset 2px 0 0 var(--mt-ink);font-weight:600}
+.list{width:340px;flex:none;border-right:1px solid var(--mt-line);display:flex;flex-direction:column;background:var(--mt-panel)}
+.listhead{display:flex;align-items:center;gap:8px;padding:24px 20px 14px}
+.h1{font-family:Archivo,sans-serif;font-weight:800;font-size:28px;line-height:32px;margin:0;letter-spacing:-0.02em}
+.nitem{display:flex;flex-direction:column;gap:4px;padding:14px 20px;border:0;border-top:1px solid var(--mt-line);background:transparent;text-align:left;font:inherit;color:var(--mt-ink);cursor:pointer;width:100%}
+.nitem:hover{background:#FAF9F6}
+.nitem.on{background:var(--mt-raised);box-shadow:inset 2px 0 0 var(--mt-ink)}
+.ntitle{font-weight:600;font-size:15px;line-height:22px}
+.nsnip{font-size:13px;line-height:18px;color:var(--mt-ink-2);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.nmeta{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mt-ink-3)}
+.editor{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--mt-panel)}
+.toolbar{display:flex;align-items:center;gap:4px;height:60px;padding:0 24px;border-bottom:1px solid var(--mt-line)}
+.tb{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:6px;background:transparent;color:var(--mt-ink-2);cursor:pointer;font:inherit;font-weight:700}
+.tb:hover{background:var(--mt-raised);color:var(--mt-ink)}
+.doc{flex:1;overflow:hidden;padding:32px 56px;display:flex;flex-direction:column;gap:14px;max-width:760px}
+.dtitle{font-family:Archivo,sans-serif;font-weight:800;font-size:32px;line-height:36px;margin:0;letter-spacing:-0.02em}
+.chip{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border-radius:999px;border:1px solid var(--mt-line);background:var(--mt-paper);font-size:12px;color:var(--mt-ink-2);text-decoration:none}
+.chip:hover{border-color:var(--mt-line-strong);color:var(--mt-ink)}
+.p{margin:0;font-size:16px;line-height:26px;color:var(--mt-ink)}
+.h3{font-family:Archivo,sans-serif;font-weight:700;font-size:18px;line-height:24px;margin:8px 0 0}
+.chk{display:flex;align-items:center;gap:12px;min-height:32px;font-size:16px;line-height:24px}
+.chk input{width:18px;height:18px;margin:0;accent-color:#16171A;flex:none}
+.chk.done span{color:var(--mt-ink-3);text-decoration:line-through}
+.photo{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;height:150px;border-radius:8px;background:var(--mt-raised);color:var(--mt-ink-2);font-size:13px;text-align:center;padding:12px}
+.back{margin-top:auto;display:flex;align-items:center;gap:10px;padding:14px 56px;border-top:1px solid var(--mt-line);font-size:13px;color:var(--mt-ink-2)}
+</style>
+</helmet>
+<div class="app mt-base">
+  <aside class="side">
+    <div class="brand">
+      <span class="av" aria-hidden="true">E</span>
+      <div style="display: flex; flex-direction: column">
+        <span style="font-weight: 600">Elmar</span>
+        <span style="font-size: 12px; color: var(--mt-ink-3)">Personal</span>
+      </div>
+    </div>
+    <button class="find" type="button">
+      <svg class="ico16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+      Search everything
+      <span class="kbd">⌘K</span>
+    </button>
+    <nav style="display: flex; flex-direction: column; gap: 2px" aria-label="Main">
+      <a class="nav" href="Main.dc.html">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"></path></svg>
+        Today<span class="count">4</span>
+      </a>
+      <a class="nav" href="Projects.dc.html">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg>
+        Projects<span class="count">5</span>
+      </a>
+      <a class="nav on" href="Notes.dc.html" aria-current="page">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"></path><path d="M14 2v5h5M8 13h8M8 17h5"></path></svg>
+        Notes
+      </a>
+      <a class="nav" href="Calendar.dc.html">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>
+        Calendar
+      </a>
+      <a class="nav" href="Map.dc.html">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.5"></circle><circle cx="5" cy="19" r="2.5"></circle><circle cx="19" cy="19" r="2.5"></circle><path d="M12 7.5v4M12 11.5 6.8 17.2M12 11.5l5.2 5.7"></path></svg>
+        Map
+      </a>
+    </nav>
+    <div class="sidelabel">Projects</div>
+    <a class="proj" href="Projects.dc.html"><span class="dot" style="background: #D64D1E"></span>Kitchen renovation</a>
+    <a class="proj" href="Projects.dc.html"><span class="dot" style="background: #16877A"></span>December in Knysna</a>
+    <a class="proj" href="Projects.dc.html"><span class="dot" style="background: #3A4FB0"></span>Cycle Tour 2027</a>
+    <a class="proj" href="Projects.dc.html"><span class="dot" style="background: #8F5B00"></span>Board pack Q4</a>
+    <a class="proj" href="Projects.dc.html"><span class="dot" style="background: #0E7A5C"></span>Garden irrigation</a>
+    <div class="sidefoot"><span class="okdot"></span>Saved on this Mac · iCloud Drive</div>
+  </aside>
+
+  <nav class="books" aria-label="Notebooks">
+    <span style="font-size: 12px; color: var(--mt-ink-3); padding: 0 12px 8px">Notebooks</span>
+    <button class="bk on" type="button" aria-current="true">All notes<span class="count">214</span></button>
+    <button class="bk" type="button">Meeting notes<span class="count">41</span></button>
+    <button class="bk" type="button">Ideas<span class="count">18</span></button>
+    <button class="bk" type="button">Recipes<span class="count">12</span></button>
+    <button class="bk" type="button">Travel<span class="count">9</span></button>
+    <span style="font-size: 12px; color: var(--mt-ink-3); padding: 18px 12px 8px">By project</span>
+    <button class="bk" type="button"><span class="dot" style="background: #D64D1E"></span>Kitchen renovation<span class="count">3</span></button>
+    <button class="bk" type="button"><span class="dot" style="background: #16877A"></span>December in Knysna<span class="count">2</span></button>
+    <button class="bk" type="button"><span class="dot" style="background: #3A4FB0"></span>Cycle Tour 2027<span class="count">1</span></button>
+    <span style="font-size: 12px; color: var(--mt-ink-3); padding: 18px 12px 8px">Brought over</span>
+    <button class="bk" type="button">
+      <svg class="ico16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"></path></svg>
+      From Evernote<span class="count">137</span>
+    </button>
+    <span style="font-size: 12px; line-height: 16px; color: var(--mt-ink-3); padding: 4px 12px">Imported 28 Oct with their notebooks, tags and attachments.</span>
+  </nav>
+
+  <section class="list" aria-labelledby="notes-h">
+    <div class="listhead">
+      <h1 class="h1" id="notes-h" style="flex: 1">All notes</h1>
+      <button class="btn primary" type="button">
+        <svg class="ico16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+        New note
+      </button>
+    </div>
+    <sc-for list="{{notes}}" as="n" hint-placeholder-count="6">
+      <button class="{{n.cls}}" type="button" onClick="{{n.pick}}" aria-current="{{n.current}}">
+        <span class="ntitle">{{n.title}}</span>
+        <span class="nsnip">{{n.snip}}</span>
+        <span class="nmeta"><span class="dot" style="{{n.dotStyle}}"></span>{{n.where}} · {{n.when}}</span>
+      </button>
+    </sc-for>
+  </section>
+
+  <section class="editor" aria-label="Note">
+    <div class="toolbar">
+      <button class="tb" type="button" aria-label="Bold">B</button>
+      <button class="tb" type="button" aria-label="Italic" style="font-style: italic; font-weight: 500; font-family: Georgia, serif">I</button>
+      <button class="tb" type="button" aria-label="Heading" style="font-family: Archivo, sans-serif">H</button>
+      <button class="tb" type="button" aria-label="Bulleted list"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"></path></svg></button>
+      <button class="tb" type="button" aria-label="Checklist"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 7 2 2 4-4M3 17l2 2 4-4M13 7h8M13 17h8"></path></svg></button>
+      <button class="tb" type="button" aria-label="Add a photo or file"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-5-5L5 21"></path></svg></button>
+      <button class="tb" type="button" aria-label="Link to a project or note"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"></path><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"></path></svg></button>
+      <span style="margin-left: auto; font-size: 12px; color: var(--mt-ink-3)">{{sel.saved}}</span>
+    </div>
+
+    <sc-if value="{{isKitchen}}" hint-placeholder-val="{{true}}">
+      <div class="doc">
+        <h2 class="dtitle">Kitchen: quotes and ideas</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px">
+          <a class="chip" href="Projects.dc.html"><span class="dot" style="background: #D64D1E"></span>Kitchen renovation</a>
+          <span class="chip">#home</span>
+          <span class="chip">#quotes</span>
+        </div>
+        <p class="p">Three quotes so far. Pieter's includes installation and taking the old cupboards out; the other two don't. Studio K is sending a revised quote this week.</p>
+        <h3 class="h3">Before we decide</h3>
+        <div style="display: flex; flex-direction: column">
+          <label class="chk done"><input type="checkbox" checked="{{true}}" readOnly="{{true}}"><span>Measure the wall for the larder unit</span></label>
+          <label class="chk done"><input type="checkbox" checked="{{true}}" readOnly="{{true}}"><span>Get three quotes</span></label>
+          <label class="chk"><input type="checkbox"><span>Choose tiles at the showroom</span><span class="chip" style="height: 24px">Fri 6 Nov</span></label>
+          <label class="chk"><input type="checkbox"><span>Ask Pieter about lead time on the stone tops</span></label>
+        </div>
+        <h3 class="h3">Ideas</h3>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+          <div class="photo"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-5-5L5 21"></path></svg>[Photo: tiles from the showroom]</div>
+          <div class="photo"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-5-5L5 21"></path></svg>[Photo: open shelving idea]</div>
+        </div>
+      </div>
+      <div class="back">
+        <svg class="ico16" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"></path><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"></path></svg>
+        Mentioned in
+        <a href="Main.dc.html">Call Pieter about the countertop quote</a>
+        <span>·</span>
+        <a href="Calendar.dc.html">Kitchen contractor site visit, today 16:30</a>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isOther}}" hint-placeholder-val="{{false}}">
+      <div class="doc">
+        <h2 class="dtitle">{{sel.title}}</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px">
+          <span class="chip"><span class="dot" style="{{sel.dotStyle}}"></span>{{sel.where}}</span>
+        </div>
+        <sc-for list="{{sel.body}}" as="para" hint-placeholder-count="3">
+          <p class="p">{{para}}</p>
+        </sc-for>
+      </div>
+    </sc-if>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const picked = (this.state && this.state.picked) || 'n1';
+    const base = [
+      { id: 'n1', title: 'Kitchen: quotes and ideas', snip: "Three quotes so far. Pieter's includes installation and taking the old cupboards out.", where: 'Kitchen renovation', color: '#D64D1E', when: '2 hours ago', saved: 'Saved 2 hours ago', body: [] },
+      { id: 'n2', title: 'Cycle Tour training plan', snip: 'Build to 100 km by January. Two long rides a week, one hill session on Wednesdays.', where: 'Cycle Tour 2027', color: '#3A4FB0', when: 'Yesterday', saved: 'Saved yesterday', body: ['Build to 100 km by January. Two long rides a week, one hill session on Wednesdays.', 'Saturdays: the long ride, adding 10 km every second week. Sundays: an easy hour.', 'Book a bike service in February, three weeks before the race.'] },
+      { id: 'n3', title: 'Knysna packing list', snip: 'Bikes on the rack, beach umbrella, the good coffee, chargers for everyone.', where: 'December in Knysna', color: '#16877A', when: '30 Oct', saved: 'Saved 30 Oct', body: ['Bikes on the rack, beach umbrella, the good coffee, chargers for everyone.', 'Ask the neighbours to water the garden and take in the post.'] },
+      { id: 'n4', title: 'Thoughts on 2027', snip: 'Where I want the business, the family and my health to be by this time next year.', where: 'From Evernote', color: '#6B6963', when: '28 Oct', saved: 'Imported from Evernote 28 Oct', body: ['Where I want the business, the family and my health to be by this time next year.', 'Business: fewer things, done properly. Family: one proper holiday a year, phones away. Health: finish the Cycle Tour.'] },
+      { id: 'n5', title: 'Leadership check-in, 27 Oct', snip: 'Hiring for the second engineer is on track. Revisit the pricing sheet before the board pack.', where: 'Meeting notes', color: '#6B6963', when: '27 Oct', saved: 'Saved 27 Oct', body: ['Hiring for the second engineer is on track.', 'Revisit the pricing sheet before the board pack goes out.'] },
+      { id: 'n6', title: 'Braai marinade', snip: 'Olive oil, lemon, garlic, smoked paprika, a little honey. Overnight is best.', where: 'Recipes', color: '#6B6963', when: '12 Oct', saved: 'Saved 12 Oct', body: ['Olive oil, lemon, garlic, smoked paprika, a little honey.', 'Overnight is best. Take it out of the fridge an hour before the fire.'] }
+    ];
+    const notes = base.map((n) => ({
+      ...n,
+      cls: n.id === picked ? 'nitem on' : 'nitem',
+      current: n.id === picked ? 'true' : 'false',
+      dotStyle: 'background: ' + n.color,
+      pick: () => this.setState({ picked: n.id })
+    }));
+    const sel = notes.find((n) => n.id === picked) || notes[0];
+    return { notes, sel, isKitchen: sel.id === 'n1', isOther: sel.id !== 'n1' };
+  }
+}
+</script>
+</body>
+</html>
