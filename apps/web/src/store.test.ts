@@ -831,4 +831,36 @@ describe('an image shared by two notes', () => {
     S().commitDelete({ label: 'x', removed: {}, blobIds: [img] });
     expect(delAssetBlob).toHaveBeenCalledWith(img);
   });
+
+  it('removing a shared file from one note keeps it, and its backup entry, for the note that shows it', () => {
+    const a = S().addNote({ title: 'A' });
+    const img = S().addAsset({ name: 'tiles.png', mime: 'image/png', size: 3 }, { type: 'note', id: a });
+    const b = S().addNote({ title: 'B' });
+    S().updateNote(b, { body: `![tiles.png](asset:${img})` });
+    const linkedTo = (id: string) =>
+      S().links.some((l) => (l.from.id === img && l.to.id === id) || (l.to.id === img && l.from.id === id));
+    vi.mocked(delAssetBlob).mockClear();
+
+    const snap = S().deleteAsset(img, { type: 'note', id: a })!;
+    // only A lets go: the record stays (so backups carry the bytes) and B keeps its link
+    expect(S().exportData().assets.map((x) => x.id)).toContain(img);
+    expect(linkedTo(b)).toBe(true);
+    expect(linkedTo(a)).toBe(false);
+    S().commitDelete(snap);
+    expect(delAssetBlob).not.toHaveBeenCalled();
+
+    // undo puts A's link back
+    S().restoreDelete(snap);
+    expect(linkedTo(a)).toBe(true);
+  });
+
+  it('removing a file only one note has still deletes it outright', () => {
+    const a = S().addNote({ title: 'A' });
+    const img = S().addAsset({ name: 'solo.pdf', mime: 'application/pdf', size: 3 }, { type: 'note', id: a });
+    vi.mocked(delAssetBlob).mockClear();
+    const snap = S().deleteAsset(img, { type: 'note', id: a })!;
+    expect(S().assets.some((x) => x.id === img)).toBe(false);
+    S().commitDelete(snap);
+    expect(delAssetBlob).toHaveBeenCalledWith(img);
+  });
 });

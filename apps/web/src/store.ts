@@ -140,7 +140,11 @@ export interface HQState {
   // assets (blob handled by src/lib/assets.ts, metadata here)
   /** `id` may be given, so a caller can save the bytes under it before the asset exists. */
   addAsset: (input: Omit<Asset, 'id' | 'createdAt'> & { id?: ID }, linkTo?: EntityRef) => ID;
-  deleteAsset: (id: ID) => DeleteSnapshot | undefined;
+  /**
+   * `from` is the note, task or project whose attachment list the file is removed from. While another
+   * note's body still shows the file, only `from` lets go of it: the record stays, so backups keep it.
+   */
+  deleteAsset: (id: ID, from?: EntityRef) => DeleteSnapshot | undefined;
 
   // undo — every entity delete above returns a DeleteSnapshot; the toast holds it
   restoreDelete: (snap: DeleteSnapshot) => void;
@@ -585,10 +589,19 @@ export const useHQ = create<HQState>()(
         }));
         return id;
       },
-      deleteAsset: (id) => {
+      deleteAsset: (id, from) => {
         const s = get();
         const asset = s.assets.find((a) => a.id === id);
         if (!asset) return undefined;
+        const shownElsewhere = from && assetIdsShown(s.notes.filter((n) => n.id !== from.id)).has(id);
+        if (shownElsewhere) {
+          // another note still shows the file: detach it from `from` only
+          const between = (l: Link) =>
+            (l.from.id === id && l.to.id === from.id) || (l.to.id === id && l.from.id === from.id);
+          const detached = s.links.filter(between);
+          set({ links: s.links.filter((l) => !between(l)) });
+          return { label: `Removed ${asset.name}`, removed: { links: detached } };
+        }
         const removedLinks = s.links.filter((l) => l.from.id === id || l.to.id === id);
         set({
           assets: s.assets.filter((a) => a.id !== id),

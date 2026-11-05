@@ -9,6 +9,9 @@ import { describe, expect, it } from 'vitest';
  * The files come in through Vite's glob rather than `node:fs`, so the package needs no Node typings.
  * `node_modules`, `dist` and `src-tauri/target` are skipped, as are binary and generated file types.
  */
+// Node and jsdom both provide atob; this package's tsconfig has no DOM lib to declare it.
+declare function atob(data: string): string;
+
 // The names themselves are kept out of plain sight (this repository is public), so the alternation
 // is stored base64-encoded; decode it to read or extend the list.
 const FORBIDDEN = new RegExp(

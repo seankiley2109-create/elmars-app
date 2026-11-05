@@ -225,7 +225,7 @@ function NoteFiles({ noteId, body }: { noteId: ID; body: string }) {
               type="button"
               aria-label={`Remove ${a.name}`}
               title={`Remove ${a.name}`}
-              onClick={() => deleteWithUndo(() => deleteAsset(a.id))}
+              onClick={() => deleteWithUndo(() => deleteAsset(a.id, { type: 'note', id: noteId }))}
               className="inline-flex h-11 w-11 items-center justify-center rounded-md text-ink-3 hover:bg-raised hover:text-ink"
             >
               <Trash2 size={16} aria-hidden />

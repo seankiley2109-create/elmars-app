@@ -104,7 +104,7 @@ export default function Attachments({ entity }: { entity: EntityRef }) {
         <AssetRow
           key={a.id}
           asset={a}
-          onDelete={() => deleteWithUndo(() => deleteAsset(a.id))}
+          onDelete={() => deleteWithUndo(() => deleteAsset(a.id, entity))}
         />
       ))}
       <button onClick={() => fileRef.current?.click()} className={btnGhost}>
