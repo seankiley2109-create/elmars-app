@@ -1,9 +1,15 @@
 name: Build Mac app
 
-# Builds a universal (Apple silicon + Intel) .dmg for Elmar's App.
-# The app is ad-hoc signed (signingIdentity "-" in tauri.conf.json). There are no
-# Apple certificates or signing keys here, on purpose: first launch goes through
-# System Settings -> Privacy & Security -> "Open Anyway".
+# Builds a universal (Apple silicon + Intel) Elmar's App.
+#
+# - A tag like v0.1.1 (made by `npm run release -- 0.1.1`, see docs/RELEASING.md) builds the app and
+#   PUBLISHES a GitHub Release: the .dmg for a first install, plus the signed update
+#   (Elmar's App.app.tar.gz + .sig) and latest.json, which the installed app checks for updates.
+# - "Run workflow" (workflow_dispatch) is a test build: the .dmg is kept as an artifact, nothing is published.
+#
+# The app is ad-hoc signed (signingIdentity "-" in tauri.conf.json): there are no Apple certificates
+# here, on purpose. The updater has its own key: TAURI_SIGNING_PRIVATE_KEY (+ _PASSWORD) are
+# repository secrets, and the matching public key is plugins.updater.pubkey in tauri.conf.json.
 
 on:
   workflow_dispatch:
@@ -17,6 +23,10 @@ permissions:
 jobs:
   build-mac:
     runs-on: macos-latest
+    permissions:
+      contents: write # publish the release (tags only)
+    env:
+      IS_RELEASE: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
     steps:
       - name: Check out the code
         uses: actions/checkout@v4
@@ -26,6 +36,10 @@ jobs:
         with:
           node-version: 24
           cache: npm
+
+      - name: The tag matches the app's version
+        if: env.IS_RELEASE == 'true'
+        run: node tools/check-version.mjs "$GITHUB_REF_NAME"
 
       - name: Set up Rust (both Mac targets)
         uses: dtolnay/rust-toolchain@stable
@@ -43,11 +57,55 @@ jobs:
       - name: Run tests
         run: npm test
 
-      - name: Build the universal app
+      # Test build: signs the update files too (createUpdaterArtifacts needs the key), publishes nothing.
+      - name: Build the universal app (test build)
+        if: env.IS_RELEASE != 'true'
         uses: tauri-apps/tauri-action@v0
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           projectPath: apps/web
           args: --target universal-apple-darwin
+
+      - name: Build the universal app and publish the release
+        if: env.IS_RELEASE == 'true'
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          projectPath: apps/web
+          args: --target universal-apple-darwin
+          tagName: v__VERSION__
+          releaseName: "Elmar's App v__VERSION__"
+          # The first line is what the app shows next to the version when it offers the update.
+          releaseBody: |
+            Fixes and small improvements.
+
+            Elmar's App offers this update by itself. For a first install, download the .dmg below.
+          releaseDraft: false
+          prerelease: false
+          includeUpdaterJson: true
+
+      # The app asks for darwin-aarch64 (Apple silicon) or darwin-x86_64 (Intel). tauri-action fills both
+      # from a universal build; this makes sure, and patches latest.json from darwin-universal if not.
+      - name: latest.json covers Apple silicon and Intel
+        if: env.IS_RELEASE == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/latest"
+          gh release download "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --pattern latest.json --dir "$RUNNER_TEMP/latest"
+          if node tools/updater-json.mjs "$RUNNER_TEMP/latest/latest.json"; then
+            echo "latest.json already has both Mac platforms."
+          else
+            node tools/updater-json.mjs "$RUNNER_TEMP/latest/latest.json" --fix
+            gh release upload "$GITHUB_REF_NAME" "$RUNNER_TEMP/latest/latest.json" --repo "$GITHUB_REPOSITORY" --clobber
+            node tools/updater-json.mjs "$RUNNER_TEMP/latest/latest.json"
+          fi
 
       - name: Upload the .dmg
         uses: actions/upload-artifact@v4
