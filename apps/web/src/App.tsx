@@ -14,6 +14,7 @@ import ShortcutHelp from './components/ShortcutHelp';
 import VaultToast from './components/VaultToast';
 import UndoToastHost from './components/UndoToastHost';
 import NoticeToastHost from './components/NoticeToastHost';
+import UpdateBar from './components/UpdateBar';
 import TaskDetailHost from './components/TaskDetailHost';
 import ErrorBoundary from './components/ErrorBoundary';
 import EvernoteImport from './components/EvernoteImport';
@@ -198,6 +199,8 @@ export default function App() {
       <SaveErrorToast />
       <UndoToastHost />
       <NoticeToastHost />
+      {/* the Mac app only: a new version, when there is one */}
+      <UpdateBar />
       <TaskDetailHost />
       <EvernoteImport open={importOpen} onClose={() => setImportOpen(false)} onRunningChange={onImportRunning} />
 

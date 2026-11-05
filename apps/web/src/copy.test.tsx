@@ -58,7 +58,8 @@ import { MemFsPort } from './lib/fs-port';
 import { createTauriRoot } from './lib/tauri-root';
 import SaveErrorToast from './components/SaveErrorToast';
 import { notifySaveFailed } from './lib/vault-events';
-import { UNSAVED_QUIT_MESSAGE } from './lib/vault-storage';
+import { UNSAVED_QUIT_MESSAGE, UNSAVED_UPDATE_MESSAGE } from './lib/vault-storage';
+import { UPDATE_COPY, configureUpdater, resetUpdater, useUpdates, type FoundUpdate } from './lib/updater';
 import { useHQ } from './store';
 
 /**
@@ -499,5 +500,64 @@ describe('no builder words in the states he can open', () => {
     expect(useHQ.getState().projects).toEqual([]);
     expect(screen.getByText('Start empty')).toBeDefined();
     expectPlainWords();
+  });
+});
+
+describe('no builder words when a new version comes', () => {
+  afterEach(() => resetUpdater());
+
+  const found: FoundUpdate = {
+    version: '0.1.1',
+    notes: 'Fixes and small improvements.',
+    downloadAndInstall: async () => {},
+  };
+
+  it('Settings → Check for updates: up to date, a new version (with the offer), and a failed check', async () => {
+    const check = vi.fn<() => Promise<FoundUpdate | null>>();
+    configureUpdater({ port: { check, relaunch: async () => {} } });
+    renderApp('/settings');
+
+    check.mockResolvedValueOnce(null);
+    fireEvent.click(button('Check for updates'));
+    await waitFor(() => expect(statusText()).toBe("You're up to date (0.1.0)."));
+    expectPlainWords();
+
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    check.mockRejectedValueOnce(new Error('offline'));
+    fireEvent.click(button('Check for updates'));
+    await waitFor(() => expect(statusText()).toBe(UPDATE_COPY.checkFailed));
+    expectPlainWords();
+
+    check.mockResolvedValueOnce(found);
+    fireEvent.click(button('Check for updates'));
+    await waitFor(() => expect(statusText()).toBe(UPDATE_COPY.found('0.1.1')));
+    expect(screen.getByTestId('update-bar')).toBeDefined();
+    expectPlainWords();
+  });
+
+  it('the offer in every state it can be in, on every place', () => {
+    configureUpdater({ port: null });
+    for (const route of ROUTES) {
+      for (const phase of ['offer', 'saving', 'downloading', 'restarting', 'failed'] as const) {
+        act(() => useUpdates.setState({ offer: found, shown: true, phase, progress: { done: 10, total: 40 } }));
+        renderApp(route);
+        expect(screen.getByTestId('update-bar')).toBeDefined();
+        expectPlainWords();
+        cleanup();
+      }
+    }
+  });
+
+  it('every update string, including the native question, follows the same rule', () => {
+    const strings = [
+      ...Object.values(UPDATE_COPY).map((v) => (typeof v === 'function' ? v('0.1.1') : v)),
+      UNSAVED_UPDATE_MESSAGE,
+      'Update anyway',
+      'Keep open',
+    ];
+    for (const s of strings) {
+      expect(s).not.toMatch(FORBIDDEN);
+      expect(s).not.toMatch(OLD_NAME);
+    }
   });
 });

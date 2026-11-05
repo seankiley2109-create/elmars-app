@@ -300,8 +300,23 @@ async function askToQuit(): Promise<boolean> {
   return ask(UNSAVED_QUIT_MESSAGE, { title: "Elmar's App", kind: 'warning', okLabel: 'Quit anyway', cancelLabel: 'Keep open' });
 }
 
+/** The same question before restarting into an update. */
+export const UNSAVED_UPDATE_MESSAGE = "Your last change hasn't been saved. Update and restart anyway?";
+
+/** The native dialog before an update restarts the app: "Update anyway" or "Keep open". */
+export async function askToRestart(): Promise<boolean> {
+  if (!isTauri()) return true;
+  const { ask } = await import('@tauri-apps/plugin-dialog');
+  return ask(UNSAVED_UPDATE_MESSAGE, {
+    title: "Elmar's App",
+    kind: 'warning',
+    okLabel: 'Update anyway',
+    cancelLabel: 'Keep open',
+  });
+}
+
 /** What quitting needs from a storage. */
-type Quittable = Pick<VaultStorage, 'flush' | 'hasUnsaved'>;
+export type Quittable = Pick<VaultStorage, 'flush' | 'hasUnsaved'>;
 
 /** The decision in progress, if any: closing the window and Cmd+Q at once must not ask twice. */
 let deciding: Promise<boolean> | null = null;
@@ -311,8 +326,11 @@ let deciding: Promise<boolean> | null = null;
  * cannot hold the app open by itself. If the change still is not on disk (the save failed, or is still
  * stuck), he decides. One decision at a time: a second caller while one is in progress gets the same
  * answer, so "Quit anyway?" never shows twice.
+ *
+ * Restarting into an update goes through here too (vault-boot's `saveBeforeRestart`), with its own
+ * wording of the question: the app is going away just the same.
  */
-function readyToQuit(storage: Quittable | null, opts: QuitOptions): Promise<boolean> {
+export function readyToQuit(storage: Quittable | null, opts: QuitOptions): Promise<boolean> {
   deciding ??= decideQuit(storage, opts).finally(() => {
     deciding = null;
   });

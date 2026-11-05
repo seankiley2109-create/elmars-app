@@ -12,7 +12,7 @@ import {
   wasSkipped,
 } from './vault-handle';
 import { notifySaveFailed, notifyVaultReloaded } from './vault-events';
-import { createVaultStorage, flushOnExit, flushOnQuit, type VaultStorage } from './vault-storage';
+import { askToRestart, createVaultStorage, flushOnExit, flushOnQuit, readyToQuit, type VaultStorage } from './vault-storage';
 import { isTauri, onAppFocus } from './platform';
 import { IcloudPendingError, tauriFsPort, type FsPort } from './fs-port';
 import { createTauriRoot, failFastRoot, sweepTempFiles } from './tauri-root';
@@ -102,6 +102,15 @@ const current = {
   syncFromDisk: (): ReturnType<VaultStorage['syncFromDisk']> => activeStorage?.syncFromDisk() ?? Promise.resolve(null),
 };
 let lifecycleInstalled = false;
+
+/**
+ * Before an update restarts the app: the same save, and the same decision, as quitting (`readyToQuit`).
+ * Open editors hand over, the folder is written, and if the last change still isn't on disk he is
+ * asked first. True to go ahead.
+ */
+export function saveBeforeRestart(): Promise<boolean> {
+  return readyToQuit(activeStorage, { confirmQuit: askToRestart });
+}
 
 export function connectVault(dir: FileSystemDirectoryHandle): VaultStorage {
   // a failed save keeps the edit and retries; the toast says so rather than failing silently

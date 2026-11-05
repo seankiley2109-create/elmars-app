@@ -20,6 +20,7 @@ import { isTauri } from '../lib/platform';
 import { VAULT_PATH_KEY } from '../lib/vault-boot';
 import { appVersion } from '../lib/app-version';
 import { openEvernoteImport } from '../lib/evernote-open';
+import { UPDATE_COPY, canUpdate, checkForUpdate } from '../lib/updater';
 
 type Message = { tone: 'ok' | 'warn'; text: string };
 
@@ -66,6 +67,7 @@ export default function Settings() {
   const [onVault, setOnVault] = useState(isUsingVault);
   const [pending, setPending] = useState<Extract<ParsedBackup, { ok: true }> | null>(null);
   const [version, setVersion] = useState('');
+  const [checking, setChecking] = useState(false);
   const folder = savedFolder();
   const inTauri = isTauri();
   const location = useLocation();
@@ -152,6 +154,20 @@ export default function Settings() {
       setMessage(describeRestore(await restoreBackup(raw)));
     } catch {
       setMessage({ tone: 'warn', text: "Couldn't restore that backup." });
+    }
+  };
+
+  /* updates (the Mac app only): the answer is said in the status line; a new version is also offered */
+  const doCheck = async () => {
+    setChecking(true);
+    setMessage(null);
+    try {
+      const r = await checkForUpdate();
+      if (r.kind === 'available') setMessage({ tone: 'ok', text: UPDATE_COPY.found(r.version) });
+      else if (r.kind === 'none') setMessage({ tone: 'ok', text: UPDATE_COPY.upToDate(version || (await appVersion())) });
+      else setMessage({ tone: 'warn', text: UPDATE_COPY.checkFailed });
+    } finally {
+      setChecking(false);
     }
   };
 
@@ -290,6 +306,11 @@ export default function Settings() {
             </>
           )}
         </p>
+        {canUpdate() && (
+          <Button className={TALL} onClick={() => void doCheck()} disabled={checking}>
+            {checking ? UPDATE_COPY.checking : UPDATE_COPY.check}
+          </Button>
+        )}
       </Section>
 
       <Section id="settings-danger" title="Danger" tone="danger">
