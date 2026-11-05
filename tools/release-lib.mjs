@@ -179,6 +179,21 @@ export function fixUpdaterJson(json) {
 }
 
 /**
+ * latest.json built straight from a release's published update package, for when tauri-action skips
+ * writing it (it can't pair the package with its signature once GitHub renames "Elmar's App" to
+ * "Elmar.s.App" on upload). `signature` is the text of the .app.tar.gz.sig asset; `url` is the
+ * package's download URL as GitHub published it.
+ */
+export function buildUpdaterJson({ version, url, signature, notes = '', pubDate = new Date().toISOString() }) {
+  if (!parseVersion(version)) throw new Error(`"${version}" isn't a version like 0.1.1`);
+  const entry = { signature: String(signature).trim(), url };
+  const json = { version, notes, pub_date: pubDate, platforms: Object.fromEntries(MAC_PLATFORMS.map((p) => [p, entry])) };
+  const problems = updaterJsonProblems(json);
+  if (problems.length > 0) throw new Error(problems.join('; '));
+  return json;
+}
+
+/**
  * The workflow's check before building a tag: the tag, tauri.conf.json, apps/web/package.json (and
  * Cargo.toml) must all say the same version. Returns the problems, empty when they agree.
  */

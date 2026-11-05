@@ -98,7 +98,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$RUNNER_TEMP/latest"
-          gh release download "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --pattern latest.json --dir "$RUNNER_TEMP/latest"
+          if ! gh release download "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --pattern latest.json --dir "$RUNNER_TEMP/latest"; then
+            # tauri-action skips latest.json when it can't pair the package with its signature (GitHub
+            # renames "Elmar's App" to "Elmar.s.App" on upload), so build it from what was published.
+            echo "No latest.json on the release; building it from the published update package."
+            URL=$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$GITHUB_REF_NAME" --jq '[.assets[] | select(.name | endswith(".app.tar.gz"))][0].browser_download_url')
+            gh release download "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --pattern '*.app.tar.gz.sig' --dir "$RUNNER_TEMP/latest"
+            SIG=$(ls "$RUNNER_TEMP"/latest/*.app.tar.gz.sig | head -1)
+            node tools/updater-json.mjs "$RUNNER_TEMP/latest/latest.json" --create "${GITHUB_REF_NAME#v}" "$URL" "$SIG" "Elmar's App ${GITHUB_REF_NAME}"
+            gh release upload "$GITHUB_REF_NAME" "$RUNNER_TEMP/latest/latest.json" --repo "$GITHUB_REPOSITORY" --clobber
+          fi
           if node tools/updater-json.mjs "$RUNNER_TEMP/latest/latest.json"; then
             echo "latest.json already has both Mac platforms."
           else

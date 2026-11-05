@@ -12,6 +12,7 @@ import {
   readVersions,
   releaseProblem,
   tagProblems,
+  buildUpdaterJson,
   fixUpdaterJson,
   updaterJsonProblems,
   releaseGuardProblem,
@@ -145,6 +146,20 @@ test('latest.json: both Macs must get the signed universal update; a missing one
   assert.deepEqual(updaterJsonProblems(fixUpdaterJson(unsigned)), []);
 
   assert.throws(() => fixUpdaterJson({ version: '0.1.1', platforms: {} }), /no signed/);
+});
+
+test('latest.json built from the published package when tauri-action skipped it', () => {
+  const url = 'https://github.com/x/elmars-app/releases/download/v0.1.0/Elmar.s.App_universal.app.tar.gz';
+  const json = buildUpdaterJson({ version: '0.1.0', url, signature: 'c2ln\n', notes: 'First release', pubDate: '2026-11-05T12:00:00.000Z' });
+  assert.deepEqual(updaterJsonProblems(json), []);
+  assert.deepEqual(json.platforms['darwin-aarch64'], { signature: 'c2ln', url });
+  assert.deepEqual(json.platforms['darwin-x86_64'], { signature: 'c2ln', url });
+  assert.equal(json.pub_date, '2026-11-05T12:00:00.000Z');
+  assert.equal(json.notes, 'First release');
+
+  assert.throws(() => buildUpdaterJson({ version: '0.1.0', url, signature: '' }), /no signed/);
+  assert.throws(() => buildUpdaterJson({ version: '0.1.0', url: url.replace('.app.tar.gz', '.dmg'), signature: 'c2ln' }), /no signed/);
+  assert.throws(() => buildUpdaterJson({ version: 'next', url, signature: 'c2ln' }), /isn't a version/);
 });
 
 test('release guard: an up-to-date, clean main with a free tag is ready, after fetching from GitHub', () => {
